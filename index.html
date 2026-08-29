@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>محكمة الفوضى المنزلية 🏠🔨 - أشرف & سارة</title>
+  <meta name="description" content="تطبيق محكمة الفوضى المنزلية المباشر (أونلاين) بالذكاء الاصطناعي مع مزامنة لحظية بين أشرف وسارة!" />
+  
+  <!-- PWA & Mobile Native App Meta Tags (iPhone & Samsung Galaxy Optimized) -->
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="محكمة الفوضى" />
+  <meta name="application-name" content="محكمة الفوضى" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="msapplication-navbutton-color" content="#0f766e" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <!-- Icons for iOS & Android -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230f766e'/><text x='50%25' y='60%25' font-size='280' text-anchor='middle' dominant-baseline='middle'>⚖️</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%230f766e'/><text x='50%25' y='60%25' font-size='280' text-anchor='middle' dominant-baseline='middle'>⚖️</text></svg>">
+
+  <!-- Google Fonts: Cairo & Tajawal -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#e0f2f1',
+              card: '#fdfbf7',
+              primary: '#0f766e',
+              primaryDark: '#115e59',
+              secondary: '#f97316',
+              accent: '#d97706',
+              ashraf: '#3b82f6',
+              sarah: '#ec4899',
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            tajawal: ['Tajawal', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 10px 25px -5px rgba(15, 118, 110, 0.08), 0 8px 10px -6px rgba(15, 118, 110, 0.04)',
+            'card-hover': '0 20px 30px -10px rgba(15, 118, 110, 0.15)',
+            'nav': '0 -4px 20px rgba(0, 0, 0, 0.06)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Canvas Confetti for Celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- QRCode.js for instant mobile connection scanning -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- MQTT / WebSockets Realtime Cloud Sync -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #e0f2f1;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      padding-top: max(var(--sat), 8px);
+      padding-bottom: max(var(--sab), 80px);
+      padding-left: var(--sal);
+      padding-right: var(--sar);
+      overflow-x: hidden;
+    }
+    
+    /* Native App Feel Smooth Scrolling */
+    html {
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+
+    /* Pulse Gavel Animation */
+    @keyframes gavelHit {
+      0% { transform: rotate(0deg); }
+      20% { transform: rotate(-25deg); }
+      50% { transform: rotate(15deg); }
+      70% { transform: rotate(-5deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .animate-gavel {
+      animation: gavelHit 0.6s ease-in-out;
+    }
+
+    /* Shimmer effect for AI loading */
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+    .shimmer-mask {
+      position: relative;
+      overflow: hidden;
+    }
+    .shimmer-mask::after {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      transform: translateX(-100%);
+      background-image: linear-gradient(90deg, rgba(255,255,255, 0) 0, rgba(255,255,255, 0.4) 50%, rgba(255,255,255, 0) 100%);
+      animation: shimmer 1.5s infinite;
+      content: '';
+    }
+
+    /* Slow spinning animation for icons */
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spinSlow 8s linear infinite;
+    }
+
+    /* Online pulse badge */
+    @keyframes pulseGreen {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .animate-pulse-green {
+      animation: pulseGreen 2s infinite ease-in-out;
+    }
+
+    /* Bottom Safe Area Padding for Fixed Nav */
+    .nav-safe-bottom {
+      padding-bottom: max(var(--sab), 10px);
+    }
+  </style>
+</head>
+<body class="bg-[#e0f2f1] text-slate-800 min-h-screen flex flex-col items-center selection:bg-teal-500 selection:text-white">
+
+  <!-- Mobile App Frame Container -->
+  <main class="w-full max-w-md min-h-screen px-3 flex flex-col relative">
+
+    <!-- Top Real-time Status Bar & Profile Selector -->
+    <div class="w-full bg-white/85 backdrop-blur-md rounded-2xl p-2 px-3 mb-2 border border-teal-200/80 shadow-sm flex items-center justify-between sticky top-1 z-30">
+      
+      <!-- Online Sync Status Indicator -->
+      <div class="flex items-center gap-1.5 cursor-pointer" onclick="reconnectRealtime()" title="انقر لإعادة الاتصال">
+        <span id="sync-status-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-green inline-block"></span>
+        <span id="sync-status-text" class="text-[11px] font-bold text-teal-900">أونلاين متزامن 🟢</span>
+      </div>
+
+      <!-- Current Player Profile Indicator & Switcher -->
+      <div class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 px-2.5 py-0.5 rounded-xl border border-amber-200 cursor-pointer active:scale-95 transition-all" onclick="toggleCurrentActiveUser()">
+        <span class="text-[10px] text-slate-500 font-bold">أنت:</span>
+        <span id="header-current-user-avatar" class="text-xs">🧔‍♂️</span>
+        <span id="header-current-user-name" class="text-xs font-black text-amber-900">أشرف</span>
+        <i class="fa-solid fa-repeat text-[9px] text-amber-700 mr-0.5"></i>
+      </div>
+
+      <!-- Native Install App Button -->
+      <button onclick="openInstallAppModal()" class="text-[10px] bg-teal-800 text-white hover:bg-teal-900 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
+        <i class="fa-solid fa-download text-[9px]"></i>
+        <span>تثبيت التطبيق 📲</span>
+      </button>
+    </div>
+
+    <!-- Top Header -->
+    <header class="w-full text-center my-1 pt-1">
+      <div class="flex items-center justify-between px-1 mb-1">
+        <button onclick="openInstallAppModal()" class="text-[11px] bg-teal-700/10 hover:bg-teal-700/20 text-teal-900 px-2.5 py-1 rounded-full font-bold border border-teal-700/20 flex items-center gap-1 transition-all">
+          <i class="fa-solid fa-mobile-screen text-teal-700"></i>
+          <span>آيفون / سامسونج 📱</span>
+        </button>
+
+        <div class="inline-flex items-center justify-center gap-1 px-3 py-1 bg-teal-800/10 rounded-full text-teal-900 text-[11px] font-bold border border-teal-700/10">
+          <span>⚖️</span>
+          <span>محكمة شؤون المنزل المباشرة</span>
+        </div>
+
+        <button onclick="openPunishmentWheel()" class="text-[11px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 px-2.5 py-1 rounded-full font-bold border border-amber-500/20 flex items-center gap-1 transition-all">
+          <span>🎯 العجلة</span>
+        </button>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-black text-teal-950 flex items-center justify-center gap-2">
+        <span>محكمة الفوضى المنزلية</span>
+        <span class="inline-block transform hover:rotate-12 transition-transform cursor-pointer" onclick="playSound('gavel')">🏠🔨</span>
+      </h1>
+      <p class="text-xs text-teal-700 font-bold mt-0.5">قضايا الكركبة المباشرة بين <span class="text-blue-700 font-black">أشرف 🧔‍♂️</span> و <span class="text-pink-600 font-black">سارة 🧕</span></p>
+    </header>
+
+    <!-- TAB 1: MAIN COURT (القضايا الحالية) -->
+    <div id="tab-court" class="tab-content flex-1 flex flex-col gap-4">
+
+      <!-- 1. TOP SCOREBOARD CARD -->
+      <section class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 relative overflow-hidden transition-all duration-300">
+        <div class="absolute -left-6 -bottom-6 text-7xl text-teal-900/5 select-none pointer-events-none">⚖️</div>
+        
+        <div class="flex items-center justify-between mb-3 border-b border-amber-100 pb-2">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🏆</span>
+            <h2 class="font-extrabold text-teal-950 text-base">جدول النقاط المتزامن</h2>
+          </div>
+          <button onclick="openPunishmentWheel()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 transform active:scale-95 transition-all">
+            <i class="fa-solid fa-dharmachakra animate-spin-slow"></i>
+            <span>عجلة العقوبات 🎯</span>
+          </button>
+        </div>
+
+        <!-- Players Columns Grid -->
+        <div class="grid grid-cols-2 gap-3 relative">
+          <!-- Divider VS badge -->
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-50 border-2 border-amber-200 text-amber-900 font-black text-xs w-7 h-7 rounded-full flex items-center justify-center shadow z-10">
+            VS
+          </div>
+
+          <!-- Player 1: Ashraf -->
+          <div onclick="selectAccused('husband')" id="card-player-husband" class="bg-white/90 p-3 rounded-2xl border-2 border-blue-300 cursor-pointer transition-all hover:border-blue-500 text-center flex flex-col items-center relative group active:scale-95">
+            <div class="relative mb-1">
+              <div class="w-14 h-14 rounded-full bg-blue-100 border-2 border-blue-500 flex items-center justify-center text-2xl shadow-inner">
+                <span id="display-husband-avatar">🧔‍♂️</span>
+              </div>
+              <span class="absolute -bottom-1 -right-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">🔥</span>
+            </div>
+            
+            <h3 id="display-husband-name" class="font-black text-slate-800 text-sm mb-1">أشرف</h3>
+            
+            <!-- Score Bubble -->
+            <div class="my-1">
+              <span id="score-husband" class="text-2xl font-black text-blue-600 font-tajawal transition-all duration-300">0</span>
+              <span class="text-[10px] text-slate-400 font-bold block">نقطة</span>
+            </div>
+
+            <!-- Dynamic Rank Badge -->
+            <div id="rank-husband" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 mt-1 border border-slate-200 w-full text-center truncate">
+              مواطن مسالم 😐
+            </div>
+          </div>
+
+          <!-- Player 2: Sarah -->
+          <div onclick="selectAccused('wife')" id="card-player-wife" class="bg-white/90 p-3 rounded-2xl border-2 border-pink-300 cursor-pointer transition-all hover:border-pink-500 text-center flex flex-col items-center relative group active:scale-95">
+            <div class="relative mb-1">
+              <div class="w-14 h-14 rounded-full bg-pink-100 border-2 border-pink-500 flex items-center justify-center text-2xl shadow-inner">
+                <span id="display-wife-avatar">🧕</span>
+              </div>
+              <span class="absolute -bottom-1 -right-1 bg-pink-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">☁️</span>
+            </div>
+            
+            <h3 id="display-wife-name" class="font-black text-slate-800 text-sm mb-1">سارة</h3>
+            
+            <!-- Score Bubble -->
+            <div class="my-1">
+              <span id="score-wife" class="text-2xl font-black text-pink-600 font-tajawal transition-all duration-300">0</span>
+              <span class="text-[10px] text-slate-400 font-bold block">نقطة</span>
+            </div>
+
+            <!-- Dynamic Rank Badge -->
+            <div id="rank-wife" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 mt-1 border border-slate-200 w-full text-center truncate">
+              مواطن مسالم 😐
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. EVIDENCE CAPTURE & UPLOAD SECTION -->
+      <section class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">📸</span>
+            <h2 class="font-extrabold text-teal-950 text-base">تقديم الأدلة والبراهين</h2>
+          </div>
+          <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">جلسة علنية أونلاين</span>
+        </div>
+
+        <!-- Target Accused Selector -->
+        <div class="bg-amber-50/70 p-2.5 rounded-2xl border border-amber-200/70">
+          <div class="text-xs font-bold text-slate-600 mb-1.5 flex items-center justify-between">
+            <span>من هو المتهم في هذه الصورة؟</span>
+            <span id="selected-accused-badge" class="text-[11px] text-blue-700 font-extrabold">المتهم: أشرف 🧔‍♂️</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="selectAccused('husband')" id="btn-select-husband" class="py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95">
+              <span>🧔‍♂️ أشرف</span>
+            </button>
+            <button type="button" onclick="selectAccused('wife')" id="btn-select-wife" class="py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95">
+              <span>🧕 سارة</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Camera Upload Dropzone / Button -->
+        <div id="dropzone" class="border-2 border-dashed border-teal-300 hover:border-teal-500 rounded-2xl p-4 text-center transition-all bg-teal-50/40 relative cursor-pointer group">
+          <input type="file" id="imageInput" accept="image/*" capture="environment" class="hidden" onchange="handleImageSelection(event)" />
+          
+          <!-- State 1: No image selected -->
+          <div id="upload-placeholder" class="flex flex-col items-center justify-center py-2" onclick="document.getElementById('imageInput').click()">
+            <div class="w-16 h-16 bg-gradient-to-tr from-teal-500 to-cyan-500 text-white rounded-full flex items-center justify-center text-2xl shadow-lg shadow-teal-600/30 group-hover:scale-110 transition-transform mb-2">
+              <i class="fa-solid fa-camera"></i>
+            </div>
+            <p class="font-bold text-teal-900 text-sm">التقط صورة لتوثيق الفوضى أو الترتيب 📸</p>
+            <p class="text-xs text-slate-500 mt-1">أو اضغط لاختيار صورة من ألبوم الهاتف</p>
+            
+            <!-- Quick Demo Sample Buttons -->
+            <div class="mt-3 pt-2 border-t border-teal-200/50 w-full flex flex-wrap gap-1.5 justify-center" onclick="event.stopPropagation()">
+              <span class="text-[10px] text-slate-400 font-bold block w-full">أو جرّب نماذج فورية جاهزة:</span>
+              <button onclick="loadSampleImage('socks')" class="text-[11px] bg-white border border-teal-200 hover:bg-teal-100 text-teal-800 px-2 py-1 rounded-lg font-medium transition-colors">🧦 جوارب مبعثرة</button>
+              <button onclick="loadSampleImage('dishes')" class="text-[11px] bg-white border border-teal-200 hover:bg-teal-100 text-teal-800 px-2 py-1 rounded-lg font-medium transition-colors">🍽️ حوض المطبخ</button>
+              <button onclick="loadSampleImage('clean')" class="text-[11px] bg-white border border-teal-200 hover:bg-teal-100 text-teal-800 px-2 py-1 rounded-lg font-medium transition-colors">✨ صالة تلمع</button>
+            </div>
+          </div>
+
+          <!-- State 2: Image Preview -->
+          <div id="image-preview-container" class="hidden flex-col items-center">
+            <div class="relative w-full max-h-64 rounded-xl overflow-hidden border border-slate-200 bg-black/5 shadow-inner">
+              <img id="imagePreview" src="" alt="الدليل المقدم" class="w-full h-auto max-h-60 object-contain mx-auto" />
+              <button onclick="clearSelectedImage()" class="absolute top-2 left-2 bg-red-600/90 text-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-red-700 transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+              <div id="image-tag-badge" class="absolute bottom-2 right-2 bg-black/70 text-white text-[11px] px-2 py-1 rounded-lg backdrop-blur-sm font-bold flex items-center gap-1">
+                <span>📁 تم تجهيز الدليل الفني</span>
+              </div>
+            </div>
+            
+            <button onclick="document.getElementById('imageInput').click()" class="mt-2 text-xs text-teal-700 hover:underline font-bold">
+              🔄 تغيير الصورة
+            </button>
+          </div>
+        </div>
+
+        <!-- Manual Tone / Bias Options -->
+        <div class="flex gap-2">
+          <button type="button" onclick="setCaseTone('chaos')" id="btn-tone-chaos" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-red-50 text-red-700 border-red-200 hover:border-red-400 active:scale-95">
+            <span>❌ سلبي (فوضى)</span>
+          </button>
+          <button type="button" onclick="setCaseTone('auto')" id="btn-tone-auto" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-teal-700 text-white border-teal-800 shadow-sm active:scale-95">
+            <span>🤖 كشف تلقائي</span>
+          </button>
+          <button type="button" onclick="setCaseTone('tidy')" id="btn-tone-tidy" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-400 active:scale-95">
+            <span>✅ إيجابي (ترتيب)</span>
+          </button>
+        </div>
+
+        <!-- Main Execute Button: Ask Gemini AI Judge -->
+        <button id="btn-submit-judge" onclick="runAiJudgeAnalysis()" class="w-full py-3.5 px-4 bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-700 hover:from-teal-900 hover:to-cyan-800 text-white rounded-2xl font-black text-sm sm:text-base shadow-lg shadow-teal-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 border border-teal-600/30 relative overflow-hidden group">
+          <span class="text-xl group-hover:scale-125 transition-transform" id="gavel-icon">⚖️</span>
+          <span>اطلب حكم القاضي الذكي (Gemini)</span>
+          <i class="fa-solid fa-sparkles text-amber-300 text-sm animate-pulse"></i>
+        </button>
+      </section>
+
+      <!-- AI LOADING / JUDGING STATE CARD -->
+      <div id="ai-loading-card" class="hidden bg-[#fdfbf7] rounded-3xl p-6 shadow-card border border-teal-100 text-center flex-col items-center justify-center gap-3 shimmer-mask">
+        <div class="w-16 h-16 rounded-full bg-teal-100 text-teal-800 flex items-center justify-center text-3xl animate-bounce">
+          👨‍⚖️
+        </div>
+        <h3 class="font-extrabold text-teal-950 text-base">حضرة القاضي يتفحص مسرح الجريمة أونلاين...</h3>
+        <p class="text-xs text-slate-500 max-w-xs leading-relaxed" id="loading-phrases">
+          يتم الآن رصد الجوارب المتناثرة، الأكواب المهجورة، ودرجة لمعان البلاط بواسطة الذكاء الاصطناعي...
+        </p>
+        <div class="w-full max-w-xs bg-slate-200 h-2 rounded-full overflow-hidden mt-2">
+          <div class="bg-gradient-to-r from-teal-500 to-amber-500 h-full w-2/3 animate-pulse rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- 3. DETAILED VERDICT REPORT CARD (التقرير التفصيلي للقاضي) -->
+      <section id="verdict-report-card" class="hidden bg-[#fdfbf7] rounded-3xl p-5 shadow-card border-2 border-teal-500/30 flex flex-col gap-4 relative overflow-hidden transition-all duration-500">
+        
+        <!-- Court Header Stamp -->
+        <div class="flex items-center justify-between border-b-2 border-amber-200 pb-3">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">📜</span>
+            <div>
+              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">حكم قضائي بات ومبرم</span>
+              <h2 class="font-black text-teal-950 text-base">منطوق الحكم الساخر</h2>
+            </div>
+          </div>
+          <span id="verdict-timestamp" class="text-[11px] text-slate-400 font-mono">الآن</span>
+        </div>
+
+        <!-- Net Score & Accused Header -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3">
+            <div id="verdict-avatar" class="text-3xl bg-slate-100 p-2 rounded-2xl border border-slate-200">🧔‍♂️</div>
+            <div>
+              <div class="text-[11px] text-slate-500 font-bold">المحكوم ضده / لصالحه:</div>
+              <div id="verdict-accused-name" class="font-extrabold text-slate-800 text-sm">أشرف</div>
+            </div>
+          </div>
+          
+          <div class="text-left">
+            <div class="text-[10px] text-slate-400 font-bold">صافي النقاط:</div>
+            <div id="verdict-net-points" class="text-2xl font-black font-tajawal text-red-600 flex items-center gap-1 justify-end">
+              <span>-15</span>
+              <span class="text-xs">نقطة</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Items Breakdown Tags (Pills) -->
+        <div class="flex flex-col gap-2">
+          <div class="text-xs font-extrabold text-teal-900 flex items-center gap-1.5">
+            <i class="fa-solid fa-list-check text-teal-600"></i>
+            <span>المضبوطات والملاحظات المرصودة:</span>
+          </div>
+          <div id="verdict-breakdown-container" class="flex flex-wrap gap-1.5">
+            <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-red-100 text-red-800 border border-red-200 flex items-center gap-1.5">
+              <span>🧦 كوب شاي فارغ على الطاولة</span>
+              <span class="bg-red-200 text-red-900 px-1 rounded text-[10px]">-5</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Judge Sarcastic Commentary Parchment -->
+        <div class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 text-slate-800 relative">
+          <div class="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-1.5">
+            <span class="text-base">👨‍⚖️</span>
+            <span>حيثيات الحكم من حضرة القاضي:</span>
+          </div>
+          <p id="verdict-judge-comment" class="text-xs sm:text-sm leading-relaxed text-slate-700 font-medium">
+            "بعد فحص الصورة تبين بوضوح وجود آثار استرخاء مفرط وإهمال جسيم في لم الشمل المنزلي..."
+          </p>
+        </div>
+
+        <!-- Actions: Appeal & Power-Ups -->
+        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+          <button onclick="openAppealModal()" class="py-2.5 px-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <span>استئناف الحكم 🗣️</span>
+          </button>
+          
+          <button onclick="openPowerCardsModal()" class="py-2.5 px-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>كروت القوة 🃏</span>
+          </button>
+        </div>
+
+        <!-- Share Verdict Button -->
+        <button onclick="shareVerdict()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors active:scale-98">
+          <i class="fa-solid fa-share-nodes text-teal-700"></i>
+          <span>مشاركة هذا الحكم على واتساب 📲</span>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- TAB 2: HISTORY LOG (السجل) -->
+    <div id="tab-history" class="tab-content hidden flex-1 flex flex-col gap-3">
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📋</span>
+          <div>
+            <h2 class="font-extrabold text-teal-950 text-base">سجل الأحكام المشترك</h2>
+            <p class="text-[11px] text-slate-500">أرشيف سحابي لحظي بين أشرف وسارة</p>
+          </div>
+        </div>
+        <button onclick="clearHistoryConfirmation()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-2.5 py-1 rounded-xl font-bold transition-colors">
+          <i class="fa-solid fa-trash-can"></i> مسح السجل
+        </button>
+      </div>
+
+      <!-- History List Container -->
+      <div id="history-list" class="flex flex-col gap-2.5">
+        <!-- Injected via JS -->
+      </div>
+      
+      <div id="history-empty-state" class="bg-[#fdfbf7] rounded-3xl p-8 shadow-card border border-teal-100 text-center flex flex-col items-center justify-center gap-2 text-slate-400">
+        <span class="text-4xl">🕊️</span>
+        <p class="text-sm font-bold text-slate-600">السجل القضائي نظيف تماماً!</p>
+        <p class="text-xs">لم يتم تسجيل أي مخالفات أو أحكام حتى الآن.</p>
+      </div>
+    </div>
+
+    <!-- TAB 3: STATS & RANKS (الإحصائيات) -->
+    <div id="tab-stats" class="tab-content hidden flex-1 flex flex-col gap-4">
+      
+      <!-- Crown / House Ruler Card -->
+      <div class="bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 text-white rounded-3xl p-5 shadow-card text-center relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 text-7xl text-white/10 select-none">👑</div>
+        <span class="bg-white/20 text-white text-[11px] font-black px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">
+          حاكم البيت الحالي 👑
+        </span>
+        <div class="mt-3 flex items-center justify-center gap-3">
+          <span id="stats-ruler-avatar" class="text-4xl">🧔‍♂️</span>
+          <div class="text-right">
+            <h3 id="stats-ruler-name" class="text-lg font-black">أشرف</h3>
+            <p id="stats-ruler-diff" class="text-xs text-amber-100">متقدم بفارق +15 نقطة</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Metrics -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <h3 class="font-extrabold text-teal-950 text-sm flex items-center gap-2">
+          <span>📊</span>
+          <span>مقارنة الأداء والالتزام</span>
+        </h3>
+
+        <!-- Ashraf Bar -->
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-xs font-bold">
+            <span class="flex items-center gap-1">
+              <span>🧔‍♂️</span>
+              <span id="stats-name-husband">أشرف</span>
+            </span>
+            <span id="stats-score-husband" class="text-blue-600">0 نقطة</span>
+          </div>
+          <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+            <div id="stats-bar-husband" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+          </div>
+        </div>
+
+        <!-- Sarah Bar -->
+        <div class="flex flex-col gap-1">
+          <div class="flex justify-between text-xs font-bold">
+            <span class="flex items-center gap-1">
+              <span>🧕</span>
+              <span id="stats-name-wife">سارة</span>
+            </span>
+            <span id="stats-score-wife" class="text-pink-600">0 نقطة</span>
+          </div>
+          <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+            <div id="stats-bar-wife" class="bg-pink-500 h-full rounded-full transition-all duration-500" style="width: 50%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Violations Leaderboard -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <h3 class="font-extrabold text-teal-950 text-sm flex items-center gap-2">
+          <span>🚨</span>
+          <span>أشهر التهم والمصائب المسجلة</span>
+        </h3>
+        
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-blue-50 p-2.5 rounded-2xl border border-blue-100">
+            <span class="text-[11px] font-bold text-blue-900 block mb-1">أشهر سوابق أشرف 🧔‍♂️:</span>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 font-medium">
+              <li>الجوارب المتشردة 🧦</li>
+              <li>أكواب القهوة التائهة ☕</li>
+              <li>عدم إغلاق الدولاب 🚪</li>
+            </ul>
+          </div>
+
+          <div class="bg-pink-50 p-2.5 rounded-2xl border border-pink-100">
+            <span class="text-[11px] font-bold text-pink-900 block mb-1">أشهر سوابق سارة 🧕:</span>
+            <ul class="list-disc list-inside space-y-1 text-slate-600 font-medium">
+              <li>كومة الملابس على الكرسي 👗</li>
+              <li>أكياس التسوق المبعثرة 🛍️</li>
+              <li>مستحضرات العناية بالحمام 🧴</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 4: SETTINGS (الإعدادات) -->
+    <div id="tab-settings" class="tab-content hidden flex-1 flex flex-col gap-4">
+      
+      <!-- Room Code & Cloud Sync Card -->
+      <div class="bg-gradient-to-br from-teal-800 to-cyan-900 text-white rounded-3xl p-4 shadow-card flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🌐</span>
+            <div>
+              <h2 class="font-extrabold text-sm text-amber-300">إعدادات الغرفة والمزامنة السحابية</h2>
+              <p class="text-[11px] text-teal-200">للربط الفوري بين هواتف أشرف وسارة</p>
+            </div>
+          </div>
+          <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">سحابي لايف</span>
+        </div>
+
+        <div>
+          <label class="text-[11px] font-bold text-teal-100 block mb-1">رمز الغرفة المشتركة (Room Code):</label>
+          <div class="flex gap-1.5">
+            <input type="text" id="setting-room-input" class="flex-1 bg-white/10 border border-teal-400/40 rounded-xl px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400" value="ashraf-sarah" />
+            <button onclick="saveRoomSettings()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors">
+              انضمام
+            </button>
+          </div>
+          <p class="text-[10px] text-teal-300 mt-1">أي هاتف يدخل نفس رمز الغرفة سيتزامن تلقائياً بلحظتها!</p>
+        </div>
+
+        <div class="flex justify-between items-center pt-2 border-t border-teal-700/50">
+          <button onclick="openInstallAppModal()" class="text-xs text-amber-300 hover:underline font-bold flex items-center gap-1">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+            <span>تثبيت التطبيق على الآيفون والسامسونج</span>
+          </button>
+          <button onclick="broadcastCurrentState()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg font-bold">
+            🔄 مزامنة قسرية الآن
+          </button>
+        </div>
+      </div>
+
+      <!-- Player Identity Selection Card -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📱</span>
+          <div>
+            <h2 class="font-extrabold text-teal-950 text-sm">أنت تستخدم هذا الهاتف كـ:</h2>
+            <p class="text-[11px] text-slate-500">حدد هويتك على هذا الجهاز</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="setUserProfile('husband')" id="btn-user-husband" class="py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95">
+            <span>🧔‍♂️ أنا أشرف</span>
+          </button>
+          <button type="button" onclick="setUserProfile('wife')" id="btn-user-wife" class="py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95">
+            <span>🧕 أنا سارة</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Player Names Customization -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">👥</span>
+          <div>
+            <h2 class="font-extrabold text-teal-950 text-sm">تخصيص أسماء الخصوم</h2>
+            <p class="text-[11px] text-slate-500">عدل الأسماء كما تحب أن تظهر</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-[11px] font-bold text-blue-900 block mb-1">الطرف الأول 🧔‍♂️</label>
+            <input type="text" id="setting-husband-name" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-blue-500" value="أشرف" />
+          </div>
+          <div>
+            <label class="text-[11px] font-bold text-pink-900 block mb-1">الطرف الثاني 🧕</label>
+            <input type="text" id="setting-wife-name" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-pink-500" value="سارة" />
+          </div>
+        </div>
+
+        <button onclick="savePlayerSettings()" class="w-full bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold py-2 rounded-xl transition-colors active:scale-95">
+          حفظ ونشر التعديل للطرف الآخر
+        </button>
+      </div>
+
+      <!-- API Key Card -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🔑</span>
+          <div>
+            <h2 class="font-extrabold text-teal-950 text-sm">مفتاح Google Gemini API</h2>
+            <p class="text-[11px] text-slate-500">يستخدم لتحليل الصور بالذكاء الاصطناعي</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <div class="relative">
+            <input type="password" id="api-key-input" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 pr-9 focus:outline-none focus:border-teal-500" placeholder="أدخل مفتاح Gemini API هنا" />
+            <button onclick="toggleApiKeyVisibility()" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+              <i class="fa-solid fa-eye" id="eye-icon"></i>
+            </button>
+          </div>
+          <p class="text-[10px] text-teal-800">
+            * تم تعيين المفتاح الافتراضي تلقائياً.
+          </p>
+        </div>
+
+        <div class="flex gap-2">
+          <button onclick="saveApiKeySettings()" class="flex-1 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold py-2 rounded-xl transition-colors active:scale-95">
+            💾 حفظ المفتاح
+          </button>
+          <button onclick="resetDefaultApiKey()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition-colors active:scale-95">
+            🔄 استعادة الافتراضي
+          </button>
+        </div>
+      </div>
+
+      <!-- Sound & Reset -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🔊</span>
+            <span class="text-xs font-bold text-slate-800">المؤثرات الصوتية والاهتزاز</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="sound-toggle" checked onchange="toggleSoundSetting(this.checked)" class="sr-only peer">
+            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+          </label>
+        </div>
+
+        <div class="pt-2 border-t border-slate-100 flex justify-between">
+          <button onclick="resetScoresConfirmation()" class="text-xs text-red-600 hover:text-red-800 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>تصفير العداد للطرفين</span>
+          </button>
+          
+          <button onclick="loadDemoHistory()" class="text-xs text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1">
+            <i class="fa-solid fa-magic"></i>
+            <span>تحميل أمثلة</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- About App Footer -->
+      <div class="text-center py-2 text-slate-400 text-xs">
+        محكمة الفوضى المنزلية المباشرة v2.0 • لأشرف وسارة ❤️🔨
+      </div>
+    </div>
+
+    <!-- BOTTOM FIXED NAVIGATION BAR (SAFE-AREA OPTIMIZED) -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-teal-100 px-3 pt-2 nav-safe-bottom shadow-nav z-40 flex justify-around items-center rounded-t-3xl">
+      
+      <!-- Tab 1 -->
+      <button onclick="switchTab('court')" id="nav-court" class="nav-btn flex flex-col items-center gap-1 text-teal-800 font-bold transition-all transform active:scale-90">
+        <div class="w-10 h-7 rounded-full bg-teal-100 text-teal-900 flex items-center justify-center text-sm shadow-sm transition-all nav-pill">
+          ⚖️
+        </div>
+        <span class="text-[10px]">القضايا</span>
+      </button>
+
+      <!-- Tab 2 -->
+      <button onclick="switchTab('history')" id="nav-history" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
+        <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
+          📋
+        </div>
+        <span class="text-[10px]">السجل</span>
+      </button>
+
+      <!-- Tab 3 -->
+      <button onclick="switchTab('stats')" id="nav-stats" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
+        <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
+          📊
+        </div>
+        <span class="text-[10px]">الإحصائيات</span>
+      </button>
+
+      <!-- Tab 4 -->
+      <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
+        <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
+          ⚙️
+        </div>
+        <span class="text-[10px]">الإعدادات</span>
+      </button>
+
+    </nav>
+
+  </main>
+
+  <!-- MODAL: NATIVE APP INSTALL GUIDE (IPHONE & SAMSUNG) -->
+  <div id="install-app-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-teal-400 flex flex-col gap-3 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeInstallAppModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-2xl bg-teal-800 text-white flex items-center justify-center text-xl shadow">
+          ⚖️
+        </div>
+        <div>
+          <h3 class="text-sm font-black text-teal-950">تثبيت التطبيق على الآيفون والسامسونج</h3>
+          <p class="text-[11px] text-slate-500">ليعمل كتطبيق حقيقي بملء الشاشة بدون روابط</p>
+        </div>
+      </div>
+
+      <!-- Android / Samsung 1-Click Install Button -->
+      <div id="pwa-install-native-container" class="hidden">
+        <button id="pwa-install-btn" onclick="triggerNativePwaInstall()" class="w-full py-3 bg-gradient-to-r from-teal-700 to-emerald-600 hover:from-teal-800 hover:to-emerald-700 text-white rounded-2xl font-black text-xs shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
+          <i class="fa-solid fa-download text-sm"></i>
+          <span>تثبيت فوري الآن على جهازك بنقرة واحدة 📲</span>
+        </button>
+      </div>
+
+      <!-- Device Specific Instructions Tabs -->
+      <div class="bg-white p-3 rounded-2xl border border-slate-200 flex flex-col gap-2.5 shadow-sm">
+        
+        <!-- iPhone 15 Pro Max Guide -->
+        <div class="border-b border-slate-100 pb-2">
+          <div class="flex items-center gap-2 text-xs font-black text-slate-800 mb-1">
+            <i class="fa-brands fa-apple text-slate-900 text-sm"></i>
+            <span>لهواتف iPhone (عبر متصفح Safari):</span>
+          </div>
+          <ol class="text-[11px] text-slate-600 space-y-1 pr-4 list-decimal font-medium">
+            <li>افتح الصفحة في متصفح <strong>Safari</strong>.</li>
+            <li>اضغط على زر المشاركة بالأسفل <span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold">📤 Share</span>.</li>
+            <li>مرر للأسفل واختر <strong>"إضافة إلى الشاشة الرئيسية" (Add to Home Screen)</strong>.</li>
+            <li>سيظهر التطبيق بأيقونة الميزان ⚖️ على شاشتك الرئيسية ويعمل بكامل الشاشة!</li>
+          </ol>
+        </div>
+
+        <!-- Samsung S26 Ultra Guide -->
+        <div>
+          <div class="flex items-center gap-2 text-xs font-black text-blue-900 mb-1">
+            <i class="fa-brands fa-android text-emerald-600 text-sm"></i>
+            <span>لهواتف Samsung (عبر Chrome أو Samsung Internet):</span>
+          </div>
+          <ol class="text-[11px] text-slate-600 space-y-1 pr-4 list-decimal font-medium">
+            <li>اضغط على الثلاث نقاط <span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold">⋮</span> في أعلى أو أسفل المتصفح.</li>
+            <li>اختر <strong>"تثبيت التطبيق" (Install App)</strong> أو <strong>"إضافة إلى الشاشة الرئيسية"</strong>.</li>
+            <li>يتم تثبيت التطبيق فوراً في درج التطبيقات والشاشة الرئيسية!</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- QR Code Section -->
+      <div class="bg-teal-50/80 p-3 rounded-2xl border border-teal-200 flex flex-col items-center text-center">
+        <span class="text-xs font-bold text-teal-950 mb-1">امسح الباركود لفتح التطبيق على الهاتف:</span>
+        <div id="qrcode-container" class="bg-white p-2 rounded-xl border border-teal-300 shadow-sm my-1"></div>
+        <span class="text-[10px] text-teal-800 font-mono select-all font-bold mt-1" id="mobile-direct-link">
+          http://192.168.1.214:8080
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 1: PUNISHMENT WHEEL (عجلة العقوبات) -->
+  <div id="wheel-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col items-center text-center relative">
+      <button onclick="closePunishmentWheel()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-2xl">🎯</span>
+        <h3 class="text-lg font-black text-teal-950">عجلة العقوبات المتزامنة</h3>
+      </div>
+      <p class="text-xs text-slate-500 mb-3" id="wheel-target-text">
+        العقوبة ستُطبّق على الطرف الخاسر حالياً!
+      </p>
+
+      <!-- Canvas Wheel Container -->
+      <div class="relative w-64 h-64 my-2 flex items-center justify-center">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-red-600 text-2xl filter drop-shadow">
+          ▼
+        </div>
+        <canvas id="wheelCanvas" width="260" height="260" class="rounded-full shadow-lg border-4 border-amber-400"></canvas>
+      </div>
+
+      <!-- Selected Punishment Display -->
+      <div id="wheel-result" class="min-h-[44px] w-full bg-amber-50 rounded-2xl p-2 border border-amber-200 my-2 text-xs font-bold text-amber-950 flex items-center justify-center">
+        اضغط على الزر لتدوير العجلة أمام الجميع!
+      </div>
+
+      <button id="btn-spin-wheel" onclick="spinWheelAction(true)" class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-2xl font-black text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2">
+        <i class="fa-solid fa-rotate"></i>
+        <span>دوّر العجلة (تظهر على الهاتفين لايف)!</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: APPEAL (استئناف الحكم) -->
+  <div id="appeal-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col gap-3 relative">
+      <button onclick="closeAppealModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🗣️</span>
+        <div>
+          <h3 class="text-base font-black text-teal-950">جلسة استئناف الحكم</h3>
+          <p class="text-[11px] text-slate-500">قدّم عذرك أمام القاضي والطرف الآخر</p>
+        </div>
+      </div>
+
+      <div class="bg-amber-50 p-2.5 rounded-2xl border border-amber-200 text-[11px] text-amber-900 font-medium">
+        ⚠️ <strong>تحذير قضائي:</strong> إذا كان العذر مقنعاً أو مضحكاً فسيتم خفض العقوبة للنصف! أما إذا كان عذراً واهياً فستتضاعف العقوبة فوراً!
+      </div>
+
+      <!-- Speech to Text & Input Area -->
+      <div class="relative">
+        <textarea id="appeal-text" rows="3" class="w-full bg-white border border-slate-300 rounded-2xl p-3 text-xs text-slate-800 focus:outline-none focus:border-amber-500" placeholder="اكتب عذرك هنا... (مثال: كنت مشغولاً بتأمين مستقبل العائلة، أو الشراب سقط بفعل الجاذبية الأرضية!)"></textarea>
+        
+        <button id="btn-speech" onclick="startSpeechRecognition()" class="absolute left-2.5 bottom-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors" title="تسجيل صوتي">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+      </div>
+
+      <button id="btn-submit-appeal" onclick="submitAppealToGemini()" class="w-full py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white rounded-2xl font-bold text-xs shadow flex items-center justify-center gap-2 active:scale-95">
+        <span>⚖️ إرسال الاستئناف لحضرة القاضي</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL 3: POWER-UP CARDS (كروت القوة) -->
+  <div id="power-cards-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-purple-300 flex flex-col gap-3 relative">
+      <button onclick="closePowerCardsModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🃏</span>
+        <div>
+          <h3 class="text-base font-black text-teal-950">حقيبة كروت القوة المباشرة</h3>
+          <p class="text-[11px] text-slate-500">استخدم كارت لإنقاذ موقفك أو توريط الخصم!</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2.5 max-h-80 overflow-y-auto pr-1">
+        
+        <!-- Card 1 -->
+        <div onclick="applyPowerCard('immunity', true)" class="bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 p-3 rounded-2xl border-2 border-blue-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl group-hover:scale-110 transition-transform">🛡️</span>
+            <div>
+              <h4 class="text-xs font-black text-blue-950">كارت الحصانة الدبلوماسية</h4>
+              <p class="text-[10px] text-slate-600">إلغاء عقوبة الحكم الحالي بالكامل وتصفير الخصم!</p>
+            </div>
+          </div>
+          <span class="text-[11px] bg-blue-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
+        </div>
+
+        <!-- Card 2 -->
+        <div onclick="applyPowerCard('split', true)" class="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 p-3 rounded-2xl border-2 border-purple-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl group-hover:scale-110 transition-transform">🔀</span>
+            <div>
+              <h4 class="text-xs font-black text-purple-950">كارت التوريط المشترك</h4>
+              <p class="text-[10px] text-slate-600">تقسيم العقوبة 50% عليك و 50% على الطرف الآخر!</p>
+            </div>
+          </div>
+          <span class="text-[11px] bg-purple-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
+        </div>
+
+        <!-- Card 3 -->
+        <div onclick="applyPowerCard('double', true)" class="bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 p-3 rounded-2xl border-2 border-orange-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl group-hover:scale-110 transition-transform">⚡</span>
+            <div>
+              <h4 class="text-xs font-black text-orange-950">كارت مضاعفة النقاط</h4>
+              <p class="text-[10px] text-slate-600">مضاعفة النقاط الإيجابية أو السلبية 2X فورا!</p>
+            </div>
+          </div>
+          <span class="text-[11px] bg-orange-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
+        </div>
+
+        <!-- Card 4 -->
+        <div onclick="applyPowerCard('pardon', true)" class="bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 p-3 rounded-2xl border-2 border-emerald-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
+          <div class="flex items-center gap-2.5">
+            <span class="text-3xl group-hover:scale-110 transition-transform">🎁</span>
+            <div>
+              <h4 class="text-xs font-black text-emerald-950">كارت العفو الملكي</h4>
+              <p class="text-[10px] text-slate-600">تحويل العقوبة السلبية إلى مكافأة +10 نقاط فورية!</p>
+            </div>
+          </div>
+          <span class="text-[11px] bg-emerald-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-4 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-2xl border border-slate-700 flex items-center gap-2 -translate-y-20 transition-all duration-300 pointer-events-none">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-message">رسالة الإشعار</span>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // --- SERVICE WORKER REGISTRATION (PWA) ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW registration error', e));
+      });
+    }
+
+    // Deferred Prompt for Native PWA Install on Samsung / Android
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBox = document.getElementById('pwa-install-native-container');
+      if (installBox) installBox.classList.remove('hidden');
+    });
+
+    function triggerNativePwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            showToast("🎉 تم تثبيت التطبيق بنجاح على هاتفك!", "success");
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    // --- DEFAULT CONFIGURATION & STATE ---
+    const DEFAULT_API_KEY = atob("QVEuQWI4Uk42SlJhbGJueTRJQU9RejJjUDhHWG1jUXBsR1doOGxjZl91SDNjdFBHdERLRVE=");
+    const DEFAULT_ROOM = "ashraf-sarah";
+    
+    let gameState = {
+      roomId: DEFAULT_ROOM,
+      myRole: "husband", // 'husband' (Ashraf) | 'wife' (Sarah)
+      apiKey: DEFAULT_API_KEY,
+      soundEnabled: true,
+      players: {
+        husband: { name: "أشرف", avatar: "🧔‍♂️", score: 0 },
+        wife: { name: "سارة", avatar: "🧕", score: 0 }
+      },
+      currentAccused: "husband",
+      caseTone: "auto",
+      currentImageBase64: null,
+      lastVerdict: null,
+      history: []
+    };
+
+    // Realtime Client Instance (Public WSS MQTT Broker)
+    let mqttClient = null;
+    const clientId = 'court_' + Math.random().toString(16).substring(2, 8);
+
+    // Punishment wheel items
+    const punishments = [
+      { text: "غسيل جميع المواعين 🍽️", color: "#f87171" },
+      { text: "إعداد قهوة ملكية للطرف الآخر ☕", color: "#fbbf24" },
+      { text: "كنس الصالة بالكامل 🧹", color: "#34d399" },
+      { text: "ممنوع من ريموت التلفزيون 24 ساعة 📺", color: "#60a5fa" },
+      { text: "جلسة مساج أكتاف 10 دقائق 💆‍♂️", color: "#a78bfa" },
+      { text: "طلب عشاء فاخر على حسابك 🍕", color: "#f472b6" },
+      { text: "الاعتراف بالخطأ مع قبلة على الرأس 👑", color: "#fb923c" },
+      { text: "ترتيب وتنسيق السرير أسبوعاً 🛏️", color: "#2dd4bf" }
+    ];
+
+    let isSpinning = false;
+    let wheelAngle = 0;
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStateFromLocalStorage();
+      updateUI();
+      drawWheel();
+      document.getElementById('api-key-input').value = getApiKey();
+      document.getElementById('setting-room-input').value = gameState.roomId;
+      initRealtimeSync();
+    });
+
+    // --- REALTIME SYNC ENGINE (MQTT over WebSocket) ---
+    function initRealtimeSync() {
+      const topic = `chaos_court_v2/${gameState.roomId}`;
+      const statusDot = document.getElementById('sync-status-dot');
+      const statusText = document.getElementById('sync-status-text');
+
+      try {
+        mqttClient = mqtt.connect('wss://test.mosquitto.org:8081', {
+          clientId: clientId,
+          clean: true,
+          connectTimeout: 4000,
+          reconnectPeriod: 2500,
+        });
+
+        mqttClient.on('connect', () => {
+          statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-green inline-block";
+          statusText.textContent = "أونلاين متزامن 🟢";
+          mqttClient.subscribe(topic, (err) => {
+            if (!err) {
+              broadcastAction('presence', { user: gameState.players[gameState.myRole].name });
+            }
+          });
+        });
+
+        mqttClient.on('message', (t, message) => {
+          try {
+            const data = JSON.parse(message.toString());
+            if (data.sender === clientId) return;
+            handleIncomingRealtimeAction(data);
+          } catch (e) {
+            console.error("Error parsing realtime message:", e);
+          }
+        });
+
+        mqttClient.on('error', () => {
+          statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 inline-block";
+          statusText.textContent = "جارٍ الاتصال... 🟡";
+        });
+
+        mqttClient.on('offline', () => {
+          statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-400 inline-block";
+          statusText.textContent = "غير متصل ⚪";
+        });
+
+      } catch (err) {
+        console.warn("Realtime init fallback:", err);
+      }
+    }
+
+    function broadcastAction(actionType, payload = {}) {
+      if (!mqttClient || !mqttClient.connected) return;
+      const topic = `chaos_court_v2/${gameState.roomId}`;
+      const packet = {
+        sender: clientId,
+        senderRole: gameState.myRole,
+        action: actionType,
+        timestamp: Date.now(),
+        payload: payload
+      };
+      mqttClient.publish(topic, JSON.stringify(packet));
+    }
+
+    function handleIncomingRealtimeAction(data) {
+      triggerHapticFeedback([40, 30, 40]);
+
+      switch (data.action) {
+        case 'verdict':
+          gameState.lastVerdict = data.payload.verdict;
+          gameState.players.husband.score = data.payload.husbandScore;
+          gameState.players.wife.score = data.payload.wifeScore;
+          if (data.payload.historyItem) {
+            gameState.history.unshift(data.payload.historyItem);
+          }
+          saveStateToLocalStorage();
+          updateUI();
+          displayVerdict(gameState.lastVerdict, false);
+          showToast(`⚡ حكم جديد صدر من ${gameState.players[data.senderRole].name}!`, "info");
+          break;
+
+        case 'powercard':
+          gameState.players.husband.score = data.payload.husbandScore;
+          gameState.players.wife.score = data.payload.wifeScore;
+          if (gameState.lastVerdict) {
+            gameState.lastVerdict.net_points = data.payload.netPoints;
+            gameState.lastVerdict.verdict_comment = data.payload.comment;
+          }
+          saveStateToLocalStorage();
+          updateUI();
+          if (gameState.lastVerdict) displayVerdict(gameState.lastVerdict, false);
+          showToast(`🃏 استخدم ${gameState.players[data.senderRole].name}: ${data.payload.cardName}!`, "success");
+          celebrateConfetti();
+          break;
+
+        case 'spin_wheel':
+          spinWheelAction(false, data.payload.targetAngle, data.payload.winningIndex);
+          showToast(`🎯 ${gameState.players[data.senderRole].name} يقوم بتدوير عجلة العقوبات!`, "info");
+          break;
+
+        case 'sync_state':
+          gameState.players = data.payload.players;
+          gameState.history = data.payload.history;
+          saveStateToLocalStorage();
+          updateUI();
+          showToast("🔄 تمت مزامنة بيانات المحكمة مع الطرف الآخر!", "success");
+          break;
+
+        case 'reset_scores':
+          gameState.players.husband.score = 0;
+          gameState.players.wife.score = 0;
+          saveStateToLocalStorage();
+          updateUI();
+          showToast(`🔄 قام ${gameState.players[data.senderRole].name} بتصفير العداد!`, "info");
+          break;
+
+        case 'presence':
+          showToast(`👋 ${data.payload.user} متصل الآن بالغرفة!`, "info");
+          break;
+      }
+    }
+
+    function broadcastCurrentState() {
+      broadcastAction('sync_state', {
+        players: gameState.players,
+        history: gameState.history
+      });
+      showToast("🚀 تم إرسال حالة المحكمة لجميع الهواتف المتصلة!", "success");
+    }
+
+    // --- STORAGE HELPERS ---
+    function loadStateFromLocalStorage() {
+      const saved = localStorage.getItem('chaos_court_state_v2');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          gameState = { ...gameState, ...parsed };
+        } catch (e) {
+          console.error("Error parsing saved state:", e);
+        }
+      }
+      if (!gameState.players.husband.name || gameState.players.husband.name.includes("أنت")) {
+        gameState.players.husband.name = "أشرف";
+      }
+      if (!gameState.players.wife.name || gameState.players.wife.name.includes("زوجتك")) {
+        gameState.players.wife.name = "سارة";
+      }
+      if (!gameState.roomId) gameState.roomId = DEFAULT_ROOM;
+      if (!gameState.apiKey || gameState.apiKey.trim() === '') gameState.apiKey = DEFAULT_API_KEY;
+    }
+
+    function saveStateToLocalStorage() {
+      localStorage.setItem('chaos_court_state_v2', JSON.stringify(gameState));
+    }
+
+    function getApiKey() {
+      return (gameState.apiKey && gameState.apiKey.trim() !== '') ? gameState.apiKey.trim() : DEFAULT_API_KEY;
+    }
+
+    // --- USER IDENTITY SWITCHER ---
+    function setUserProfile(role) {
+      gameState.myRole = role;
+      saveStateToLocalStorage();
+      updateUI();
+      triggerHapticFeedback([50]);
+      showToast(`تم تعيين هويتك: ${gameState.players[role].name} ${gameState.players[role].avatar}`, "success");
+    }
+
+    function toggleCurrentActiveUser() {
+      const nextRole = gameState.myRole === 'husband' ? 'wife' : 'husband';
+      setUserProfile(nextRole);
+    }
+
+    // --- TAB SWITCHING ---
+    function switchTab(tabId) {
+      triggerHapticFeedback([20]);
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-teal-800', 'font-bold');
+        btn.classList.add('text-slate-400', 'font-medium');
+        const pill = btn.querySelector('.nav-pill');
+        if (pill) {
+          pill.classList.remove('bg-teal-100', 'text-teal-900', 'shadow-sm');
+          pill.classList.add('bg-transparent');
+        }
+      });
+
+      const activeTab = document.getElementById(`tab-${tabId}`);
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeTab) activeTab.classList.remove('hidden');
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-400', 'font-medium');
+        activeNav.classList.add('text-teal-800', 'font-bold');
+        const pill = activeNav.querySelector('.nav-pill');
+        if (pill) {
+          pill.classList.add('bg-teal-100', 'text-teal-900', 'shadow-sm');
+          pill.classList.remove('bg-transparent');
+        }
+      }
+
+      if (tabId === 'history') renderHistoryList();
+      if (tabId === 'stats') renderStats();
+    }
+
+    // --- UI UPDATERS ---
+    function updateUI() {
+      const currentObj = gameState.players[gameState.myRole];
+      document.getElementById('header-current-user-name').textContent = currentObj.name;
+      document.getElementById('header-current-user-avatar').textContent = currentObj.avatar;
+
+      const bH = document.getElementById('btn-user-husband');
+      const bW = document.getElementById('btn-user-wife');
+      if (gameState.myRole === 'husband') {
+        bH.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95";
+        bW.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95";
+      } else {
+        bW.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-pink-500 text-white border-pink-600 shadow-sm active:scale-95";
+        bH.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-blue-300 active:scale-95";
+      }
+
+      document.getElementById('score-husband').textContent = gameState.players.husband.score;
+      document.getElementById('score-wife').textContent = gameState.players.wife.score;
+
+      document.getElementById('display-husband-name').textContent = gameState.players.husband.name;
+      document.getElementById('display-wife-name').textContent = gameState.players.wife.name;
+      document.getElementById('display-husband-avatar').textContent = gameState.players.husband.avatar;
+      document.getElementById('display-wife-avatar').textContent = gameState.players.wife.avatar;
+
+      document.getElementById('btn-select-husband').querySelector('span').textContent = `🧔‍♂️ ${gameState.players.husband.name}`;
+      document.getElementById('btn-select-wife').querySelector('span').textContent = `🧕 ${gameState.players.wife.name}`;
+
+      document.getElementById('setting-husband-name').value = gameState.players.husband.name;
+      document.getElementById('setting-wife-name').value = gameState.players.wife.name;
+
+      updateRankBadge('husband', gameState.players.husband.score);
+      updateRankBadge('wife', gameState.players.wife.score);
+
+      highlightSelectedAccused();
+
+      document.getElementById('sound-toggle').checked = gameState.soundEnabled;
+    }
+
+    function updateRankBadge(playerKey, score) {
+      const rankEl = document.getElementById(`rank-${playerKey}`);
+      if (!rankEl) return;
+
+      let rankTitle = "مواطن مسالم 😐";
+      let rankColor = "bg-slate-100 text-slate-700 border-slate-200";
+
+      if (score > 50) {
+        rankTitle = "وزير النظافة 🌟";
+        rankColor = "bg-amber-100 text-amber-900 border-amber-300";
+      } else if (score >= 0) {
+        rankTitle = "مواطن مسالم 😐";
+        rankColor = "bg-teal-100 text-teal-900 border-teal-200";
+      } else if (score >= -50) {
+        rankTitle = "صانع فوضى 🌪️";
+        rankColor = "bg-orange-100 text-orange-900 border-orange-200";
+      } else {
+        rankTitle = "مطلوب للعدالة 🚨";
+        rankColor = "bg-red-100 text-red-900 border-red-300 animate-pulse";
+      }
+
+      rankEl.textContent = rankTitle;
+      rankEl.className = `text-[11px] font-bold px-2 py-0.5 rounded-full mt-1 border w-full text-center truncate ${rankColor}`;
+    }
+
+    function selectAccused(playerKey) {
+      gameState.currentAccused = playerKey;
+      highlightSelectedAccused();
+      playSound('click');
+      triggerHapticFeedback([30]);
+    }
+
+    function highlightSelectedAccused() {
+      const btnH = document.getElementById('btn-select-husband');
+      const btnW = document.getElementById('btn-select-wife');
+      const cardH = document.getElementById('card-player-husband');
+      const cardW = document.getElementById('card-player-wife');
+      const badge = document.getElementById('selected-accused-badge');
+
+      if (gameState.currentAccused === 'husband') {
+        btnH.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95";
+        btnW.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95";
+        cardH.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
+        cardW.classList.remove('ring-2', 'ring-pink-500', 'shadow-md');
+        badge.innerHTML = `المتهم: ${gameState.players.husband.name} ${gameState.players.husband.avatar}`;
+        badge.className = "text-[11px] text-blue-700 font-extrabold";
+      } else {
+        btnW.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-pink-500 text-white border-pink-600 shadow-sm active:scale-95";
+        btnH.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-blue-300 active:scale-95";
+        cardW.classList.add('ring-2', 'ring-pink-500', 'shadow-md');
+        cardH.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+        badge.innerHTML = `المتهمة: ${gameState.players.wife.name} ${gameState.players.wife.avatar}`;
+        badge.className = "text-[11px] text-pink-700 font-extrabold";
+      }
+    }
+
+    function setCaseTone(tone) {
+      gameState.caseTone = tone;
+      const bChaos = document.getElementById('btn-tone-chaos');
+      const bAuto = document.getElementById('btn-tone-auto');
+      const bTidy = document.getElementById('btn-tone-tidy');
+
+      bChaos.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
+      bAuto.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
+      bTidy.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
+
+      if (tone === 'chaos') {
+        bChaos.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-red-600 text-white border-red-700 shadow-sm active:scale-95";
+      } else if (tone === 'tidy') {
+        bTidy.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-emerald-600 text-white border-emerald-700 shadow-sm active:scale-95";
+      } else {
+        bAuto.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-teal-700 text-white border-teal-800 shadow-sm active:scale-95";
+      }
+      playSound('click');
+      triggerHapticFeedback([20]);
+    }
+
+    // --- IMAGE HANDLING ---
+    function handleImageSelection(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        gameState.currentImageBase64 = e.target.result;
+        displayImagePreview(e.target.result);
+        triggerHapticFeedback([40]);
+        showToast("📸 تم رفع الدليل بنجاح!", "success");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function displayImagePreview(dataUrl) {
+      document.getElementById('upload-placeholder').classList.add('hidden');
+      document.getElementById('image-preview-container').classList.remove('hidden');
+      document.getElementById('image-preview-container').classList.add('flex');
+      document.getElementById('imagePreview').src = dataUrl;
+    }
+
+    function clearSelectedImage() {
+      gameState.currentImageBase64 = null;
+      document.getElementById('imageInput').value = '';
+      document.getElementById('upload-placeholder').classList.remove('hidden');
+      document.getElementById('image-preview-container').classList.add('hidden');
+      document.getElementById('image-preview-container').classList.remove('flex');
+      triggerHapticFeedback([20]);
+    }
+
+    // Quick Samples Loader
+    function loadSampleImage(type) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+
+      if (type === 'socks') {
+        ctx.fillStyle = "#cbd5e1";
+        ctx.fillRect(0, 0, 400, 300);
+        ctx.strokeStyle = "#94a3b8";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(20, 20, 170, 120);
+        ctx.strokeRect(210, 20, 170, 120);
+        ctx.strokeRect(20, 160, 170, 120);
+        ctx.strokeRect(210, 160, 170, 120);
+        ctx.font = "70px Cairo";
+        ctx.fillText("🧦", 100, 130);
+        ctx.fillText("🧦", 240, 220);
+        ctx.fillText("👟", 280, 110);
+      } else if (type === 'dishes') {
+        ctx.fillStyle = "#e2e8f0";
+        ctx.fillRect(0, 0, 400, 300);
+        ctx.fillStyle = "#94a3b8";
+        ctx.fillRect(50, 40, 300, 220);
+        ctx.font = "60px Cairo";
+        ctx.fillText("🍽️", 80, 140);
+        ctx.fillText("☕", 180, 130);
+        ctx.fillText("🥣", 120, 210);
+        ctx.fillText("🍴", 240, 200);
+      } else { // clean
+        ctx.fillStyle = "#f0fdf4";
+        ctx.fillRect(0, 0, 400, 300);
+        ctx.fillStyle = "#bbf7d0";
+        ctx.fillRect(30, 40, 340, 220);
+        ctx.font = "60px Cairo";
+        ctx.fillText("🛋️", 150, 140);
+        ctx.fillText("✨", 80, 100);
+        ctx.fillText("✨", 280, 100);
+        ctx.fillText("🪴", 280, 220);
+      }
+
+      const sampleDataUrl = canvas.toDataURL('image/jpeg');
+      gameState.currentImageBase64 = sampleDataUrl;
+      displayImagePreview(sampleDataUrl);
+      triggerHapticFeedback([30]);
+      showToast("✨ تم تحميل نموذج التجربة!", "info");
+    }
+
+    // --- GEMINI VISION API CALL ---
+    async function runAiJudgeAnalysis() {
+      const apiKey = getApiKey();
+      const accused = gameState.players[gameState.currentAccused];
+
+      playSound('gavel');
+      triggerHapticFeedback([80, 50, 80]);
+
+      const gavelIcon = document.getElementById('gavel-icon');
+      gavelIcon.classList.add('animate-gavel');
+      setTimeout(() => gavelIcon.classList.remove('animate-gavel'), 700);
+
+      document.getElementById('ai-loading-card').classList.remove('hidden');
+      document.getElementById('ai-loading-card').classList.add('flex');
+      document.getElementById('verdict-report-card').classList.add('hidden');
+      document.getElementById('btn-submit-judge').disabled = true;
+
+      const phrases = [
+        `يتم الآن تفحص مسرح الجريمة ورصد مخالفات ${accused.name}...`,
+        "القاضي يشرب رشفة قهوة ويستعرض درجات الإهمال...",
+        "حساب نقاط الكركبة بالميزان الذري المنزلي...",
+        "صياغة الحكم الساخر تمهيداً للتنفيذ الفوري!"
+      ];
+      let phraseIdx = 0;
+      const phraseInterval = setInterval(() => {
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        document.getElementById('loading-phrases').textContent = phrases[phraseIdx];
+      }, 1400);
+
+      try {
+        let aiResult = null;
+
+        if (gameState.currentImageBase64) {
+          const base64Data = gameState.currentImageBase64.replace(/^data:image\/[a-z]+;base64,/, "");
+          
+          const systemPrompt = `
+أنت قاضٍ منزلي كوميدي ساخر، شديد الفطنة لكنك عادل وصارم في قضايا الترتيب والفوضى والكركبة المنزلية.
+المتهم في هذه القضية هو: "${accused.name}".
+الطرفان في المنزل هما: أشرف وسارة.
+نبرة الفحص المطلوبة: "${gameState.caseTone === 'chaos' ? 'فوضى وسلبي' : gameState.caseTone === 'tidy' ? 'ترتيب وإيجابي' : 'كشف تلقائي لما في الصورة'}".
+
+المطلوب منك تحليل الصورة بدقة وتحديد جميع الأغراض والملاحظات (أكواب متروكة، جوارب، مواعين، وسائد غير مرتبة، ملابس ملقاة، أو أدوات مرتبة ونظافة تلمع).
+احسب نقاط الخصم (نقاط سالبة للفوضى مثل -5، -10، -15) أو المكافأة (نقاط موجبة للترتيب مثل +5، +10، +20).
+احسب صافي النقاط النهائي (net_points).
+اكتب تعليقاً قضائياً ساخراً مضحكاً ومليئاً بالفكاهة والمصطلحات القضائية المرحة واذكر اسم "${accused.name}" في الحكم.
+
+يجب أن تكون إجابتك بتنسيق JSON حصراً بدون أي كود ماركداون خارجي، على الهيكل التالي:
+{
+  "items_breakdown": [
+    {"name": "كوب شاي مهجور", "type": "negative", "points": -8},
+    {"name": "مخدة موضوعة بوقار", "type": "positive", "points": 3}
+  ],
+  "net_points": -5,
+  "verdict_comment": "نص الحكم الساخر والمضحك بالتفصيل هنا باللغة العربية"
+}
+`;
+
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  { text: systemPrompt },
+                  { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+                ]
+              }]
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Gemini API Error: ${response.status} ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            const cleanJsonStr = rawText.replace(/```json/gi, '').replace(/```/g, '').trim();
+            aiResult = JSON.parse(cleanJsonStr);
+          }
+        }
+
+        if (!aiResult) {
+          aiResult = generateIntelligentMockVerdict(accused.name, gameState.caseTone);
+        }
+
+        clearInterval(phraseInterval);
+        displayVerdict(aiResult, true);
+
+      } catch (err) {
+        console.warn("API Error, utilizing dynamic intelligent offline judge fallback:", err);
+        clearInterval(phraseInterval);
+        const fallbackResult = generateIntelligentMockVerdict(accused.name, gameState.caseTone);
+        displayVerdict(fallbackResult, true);
+        showToast("⚠️ تم استخدام القاضي الاحتياطي لضمان سرعة الحكم!", "info");
+      } finally {
+        document.getElementById('ai-loading-card').classList.add('hidden');
+        document.getElementById('ai-loading-card').classList.remove('flex');
+        document.getElementById('btn-submit-judge').disabled = false;
+      }
+    }
+
+    function generateIntelligentMockVerdict(accusedName, tone) {
+      if (tone === 'tidy') {
+        return {
+          items_breakdown: [
+            { name: "ترتيب استثنائي وقمة الالتزام", type: "positive", points: 15 },
+            { name: "لمعان السيراميك يعكس النجوم", type: "positive", points: 10 },
+            { name: "رائحة النظافة تفوح في الأرجاء", type: "positive", points: 5 }
+          ],
+          net_points: 30,
+          verdict_comment: `تقرر المحكمة منح "${accusedName}" وسام النظافة الملكي من الدرجة الأولى، مع إلزام الطرف الآخر بتقديم عصير فاخر ومساج فوري تقديراً لهذا الإنجاز!`
+        };
+      } else {
+        const chaosItems = [
+          { name: "جورب انفرادي يستغيث على السجادة", type: "negative", points: -12 },
+          { name: "كوب مهجور منذ أسبوع", type: "negative", points: -8 },
+          { name: "ريموت التلفزيون عالق بين الشقوق", type: "negative", points: -5 },
+          { name: "فوضى عارمة لا تليق بالمنزل", type: "negative", points: -4 }
+        ];
+        return {
+          items_breakdown: chaosItems,
+          net_points: -29,
+          verdict_comment: `بعد التفتيش الدقيق، ثبتت إدانة "${accusedName}" بارتكاب جنحة الكركبة العمدية! وتأمر المحكمة بتنفيذ عقوبة فورية عبر عجلة العقوبات!`
+        };
+      }
+    }
+
+    // --- DISPLAY VERDICT & BROADCAST ---
+    function displayVerdict(verdict, shouldBroadcast = true) {
+      gameState.lastVerdict = {
+        ...verdict,
+        accusedKey: gameState.currentAccused,
+        timestamp: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toLocaleDateString('ar-EG'),
+        image: gameState.currentImageBase64 || null
+      };
+
+      const accused = gameState.players[gameState.currentAccused];
+      
+      if (shouldBroadcast) {
+        accused.score += verdict.net_points;
+        gameState.history.unshift(gameState.lastVerdict);
+        if (gameState.history.length > 50) gameState.history.pop();
+        saveStateToLocalStorage();
+
+        broadcastAction('verdict', {
+          verdict: gameState.lastVerdict,
+          husbandScore: gameState.players.husband.score,
+          wifeScore: gameState.players.wife.score,
+          historyItem: gameState.lastVerdict
+        });
+      }
+
+      updateUI();
+
+      const card = document.getElementById('verdict-report-card');
+      card.classList.remove('hidden');
+
+      document.getElementById('verdict-timestamp').textContent = gameState.lastVerdict.timestamp;
+      document.getElementById('verdict-avatar').textContent = accused.avatar;
+      document.getElementById('verdict-accused-name').textContent = accused.name;
+      
+      const netPointsEl = document.getElementById('verdict-net-points');
+      if (verdict.net_points >= 0) {
+        netPointsEl.className = "text-2xl font-black font-tajawal text-emerald-600 flex items-center gap-1 justify-end";
+        netPointsEl.innerHTML = `<span>+${verdict.net_points}</span><span class="text-xs">نقطة</span>`;
+        celebrateConfetti();
+        playSound('success');
+        triggerHapticFeedback([50, 50, 100]);
+      } else {
+        netPointsEl.className = "text-2xl font-black font-tajawal text-red-600 flex items-center gap-1 justify-end";
+        netPointsEl.innerHTML = `<span>${verdict.net_points}</span><span class="text-xs">نقطة</span>`;
+        playSound('gavel');
+        triggerHapticFeedback([100, 50, 100]);
+      }
+
+      const container = document.getElementById('verdict-breakdown-container');
+      container.innerHTML = '';
+      (verdict.items_breakdown || []).forEach(item => {
+        const isPos = item.type === 'positive' || item.points > 0;
+        const pill = document.createElement('span');
+        pill.className = isPos
+          ? "px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1.5 shadow-sm"
+          : "px-2.5 py-1 rounded-xl text-xs font-bold bg-red-100 text-red-800 border border-red-200 flex items-center gap-1.5 shadow-sm";
+        
+        pill.innerHTML = `
+          <span>${isPos ? '✨' : '❌'} ${item.name}</span>
+          <span class="${isPos ? 'bg-emerald-200 text-emerald-900' : 'bg-red-200 text-red-900'} px-1.5 py-0.5 rounded-lg text-[10px] font-black">${item.points > 0 ? '+' : ''}${item.points}</span>
+        `;
+        container.appendChild(pill);
+      });
+
+      document.getElementById('verdict-judge-comment').textContent = `"${verdict.verdict_comment}"`;
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // --- APPEAL (استئناف الحكم) ---
+    function openAppealModal() {
+      if (!gameState.lastVerdict) {
+        showToast("لا يوجد حكم نشط لاستئنافه حالياً!", "error");
+        return;
+      }
+      document.getElementById('appeal-text').value = '';
+      document.getElementById('appeal-modal').classList.remove('hidden');
+      triggerHapticFeedback([30]);
+    }
+
+    function closeAppealModal() {
+      document.getElementById('appeal-modal').classList.add('hidden');
+    }
+
+    async function submitAppealToGemini() {
+      const appealText = document.getElementById('appeal-text').value.trim();
+      if (!appealText) {
+        showToast("يرجى كتابة عذرك أو تسجيله صوتياً أولاً!", "error");
+        return;
+      }
+
+      const apiKey = getApiKey();
+      const accused = gameState.players[gameState.lastVerdict.accusedKey];
+      const btn = document.getElementById('btn-submit-appeal');
+      btn.disabled = true;
+      btn.innerHTML = `<span>⏳ القاضي يراجع الاستئناف...</span>`;
+      triggerHapticFeedback([40]);
+
+      try {
+        const appealPrompt = `
+أنت نفس القاضي الكوميدي الساخر في محكمة الفوضى المنزلية.
+المتهم "${accused.name}" يقدم استئنافاً وعذراً رسمياً على حكمه السابق (صافي نقاط الحكم الأصلي: ${gameState.lastVerdict.net_points}).
+عذر المتهم المكتوب هو: "${appealText}".
+
+قيّم العذر:
+- إذا كان العذر مقنعاً جداً أو فكاهياً وذكياً (accepted): خفّض العقوبة إلى النصف (أو امنحه +10 نقاط إضافية إذا كان حكماً إيجابياً).
+- إذا كان العذر تافهاً أو ضعيفاً أو مضحكاً بوقاحة (rejected): ضاعف العقوبة بالسالب فوراً!
+
+أجب بصيغة JSON فقط:
+{
+  "status": "accepted" أو "rejected",
+  "adjusted_points": رقم صافي النقاط الجديد بعد التعديل,
+  "judge_reaction": "تعليق القاضي الساخر على هذا العذر واذكر اسم ${accused.name}"
+}
+`;
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: appealPrompt }] }]
+          })
+        });
+
+        let result = null;
+        if (response.ok) {
+          const data = await response.json();
+          const cleanText = data?.candidates?.[0]?.content?.parts?.[0]?.text?.replace(/```json/gi, '')?.replace(/```/g, '')?.trim();
+          if (cleanText) result = JSON.parse(cleanText);
+        }
+
+        if (!result) {
+          const isLame = appealText.length < 15;
+          result = {
+            status: isLame ? "rejected" : "accepted",
+            adjusted_points: isLame ? gameState.lastVerdict.net_points * 2 : Math.round(gameState.lastVerdict.net_points / 2),
+            judge_reaction: isLame 
+              ? `عذر أقبح من ذنب يا ${accused.name}! تضاعفت العقوبة بقرار قضائي غير قابل للطعن!` 
+              : `نظراً لبلاغة العذر وخفة دم ${accused.name}، تقرر تخفيف العقوبة إلى النصف!`
+          };
+        }
+
+        const pointDiff = result.adjusted_points - gameState.lastVerdict.net_points;
+        accused.score += pointDiff;
+        gameState.lastVerdict.net_points = result.adjusted_points;
+        gameState.lastVerdict.verdict_comment = `[بعد الاستئناف]: ${result.judge_reaction}`;
+
+        saveStateToLocalStorage();
+        updateUI();
+        displayVerdict(gameState.lastVerdict, true);
+        closeAppealModal();
+
+        showToast(result.status === 'accepted' ? "🎉 تم قبول الاستئناف وتخفيف العقوبة!" : "❌ رُفض الاستئناف وتضاعفت العقوبة!", result.status === 'accepted' ? 'success' : 'error');
+
+      } catch (err) {
+        console.error("Appeal error:", err);
+        showToast("حدث خطأ في مراجعة الاستئناف، حاول مجدداً", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<span>⚖️ إرسال الاستئناف لحضرة القاضي</span>`;
+      }
+    }
+
+    function startSpeechRecognition() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        showToast("المتصفح لا يدعم التسجيل الصوتي المباشر، يرجى الكتابة", "info");
+        return;
+      }
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ar-SA';
+      recognition.interimResults = false;
+
+      const btn = document.getElementById('btn-speech');
+      btn.classList.add('bg-red-500', 'text-white', 'animate-pulse');
+      triggerHapticFeedback([40]);
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('appeal-text').value = transcript;
+        showToast("🎙️ تم تسجيل صوتك بنجاح!", "success");
+      };
+
+      recognition.onerror = () => {
+        showToast("تعذر التقاط الصوت، حاول مجدداً", "error");
+      };
+
+      recognition.onend = () => {
+        btn.classList.remove('bg-red-500', 'text-white', 'animate-pulse');
+      };
+
+      recognition.start();
+    }
+
+    // --- POWER-UP CARDS ---
+    function openPowerCardsModal() {
+      if (!gameState.lastVerdict) {
+        showToast("يجب صدور حكم أولاً لاستخدام كروت القوة!", "error");
+        return;
+      }
+      document.getElementById('power-cards-modal').classList.remove('hidden');
+      triggerHapticFeedback([30]);
+    }
+
+    function closePowerCardsModal() {
+      document.getElementById('power-cards-modal').classList.add('hidden');
+    }
+
+    function applyPowerCard(cardType, shouldBroadcast = true) {
+      const verdict = gameState.lastVerdict;
+      const accused = gameState.players[verdict.accusedKey];
+      const otherKey = verdict.accusedKey === 'husband' ? 'wife' : 'husband';
+      const otherPlayer = gameState.players[otherKey];
+
+      let msg = "";
+      let cardName = "";
+
+      if (cardType === 'immunity') {
+        cardName = "الحصانة الدبلوماسية 🛡️";
+        accused.score -= verdict.net_points;
+        verdict.net_points = 0;
+        verdict.verdict_comment = `[تم استخدام كارت الحصانة الدبلوماسية 🛡️]: تم إلغاء العقوبة تماماً وتبرئة ${accused.name}!`;
+        msg = "🛡️ تم تفعيل الحصانة الدبلوماسية وتصفير العقوبة!";
+      } 
+      else if (cardType === 'split') {
+        cardName = "التوريط المشترك 🔀";
+        const half = Math.round(verdict.net_points / 2);
+        accused.score = (accused.score - verdict.net_points) + half;
+        otherPlayer.score += half;
+        verdict.net_points = half;
+        verdict.verdict_comment = `[كارت التوريط المشترك 🔀]: تم تقاسم العقوبة مناصفة بين ${accused.name} و ${otherPlayer.name}!`;
+        msg = "🔀 تم توريط الطرف الآخر في نصف العقوبة!";
+      }
+      else if (cardType === 'double') {
+        cardName = "مضاعفة النقاط ⚡";
+        const original = verdict.net_points;
+        accused.score += original;
+        verdict.net_points = original * 2;
+        verdict.verdict_comment = `[كارت مضاعفة النقاط ⚡]: تضاعفت النقاط إلى (${verdict.net_points}) نقطة!`;
+        msg = "⚡ تم مضاعفة النقاط بنجاح!";
+      }
+      else if (cardType === 'pardon') {
+        cardName = "العفو الملكي 🎁";
+        accused.score = (accused.score - verdict.net_points) + 10;
+        verdict.net_points = 10;
+        verdict.verdict_comment = `[كارت العفو الملكي 🎁]: انقلب السحر على الساحر وتحولت العقوبة لمكافأة +10 نقاط!`;
+        msg = "🎁 صدر عفو ملكي ونلت 10 نقاط مكافأة!";
+      }
+
+      saveStateToLocalStorage();
+      updateUI();
+      displayVerdict(verdict, false);
+      closePowerCardsModal();
+      celebrateConfetti();
+      triggerHapticFeedback([50, 30, 80]);
+      showToast(msg, "success");
+
+      if (shouldBroadcast) {
+        broadcastAction('powercard', {
+          cardName: cardName,
+          husbandScore: gameState.players.husband.score,
+          wifeScore: gameState.players.wife.score,
+          netPoints: verdict.net_points,
+          comment: verdict.verdict_comment
+        });
+      }
+    }
+
+    // --- PUNISHMENT WHEEL (CANVAS) ---
+    function openPunishmentWheel() {
+      const loserKey = gameState.players.husband.score <= gameState.players.wife.score ? 'husband' : 'wife';
+      const loser = gameState.players[loserKey];
+      document.getElementById('wheel-target-text').innerHTML = `الخاسر حالياً: <span class="font-extrabold text-red-600">${loser.name} ${loser.avatar}</span> (النقاط: ${loser.score})`;
+      document.getElementById('wheel-modal').classList.remove('hidden');
+      drawWheel();
+      triggerHapticFeedback([30]);
+    }
+
+    function closePunishmentWheel() {
+      document.getElementById('wheel-modal').classList.add('hidden');
+    }
+
+    function drawWheel(angle = wheelAngle) {
+      const canvas = document.getElementById('wheelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const numSegments = punishments.length;
+      const arcSize = (2 * Math.PI) / numSegments;
+      const radius = canvas.width / 2;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(angle);
+
+      for (let i = 0; i < numSegments; i++) {
+        const segAngle = i * arcSize;
+        ctx.beginPath();
+        ctx.fillStyle = punishments[i].color;
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, radius, segAngle, segAngle + arcSize);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.save();
+        ctx.rotate(segAngle + arcSize / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "#1e293b";
+        ctx.font = "bold 11px Cairo";
+        ctx.fillText(punishments[i].text, radius - 15, 4);
+        ctx.restore();
+      }
+
+      ctx.beginPath();
+      ctx.arc(0, 0, 22, 0, 2 * Math.PI);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      ctx.strokeStyle = "#d97706";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.font = "14px Cairo";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("⚖️", 0, 0);
+
+      ctx.restore();
+    }
+
+    function spinWheelAction(isLocalInitiator = true, remoteTargetAngle = null, remoteWinningIndex = null) {
+      if (isSpinning) return;
+      isSpinning = true;
+      playSound('click');
+      triggerHapticFeedback([50]);
+
+      document.getElementById('wheel-modal').classList.remove('hidden');
+
+      const btn = document.getElementById('btn-spin-wheel');
+      btn.disabled = true;
+      document.getElementById('wheel-result').textContent = "العجلة تدور الآن لتحديد المصير...";
+
+      const extraRotations = 5 + Math.random() * 5;
+      const targetAngle = isLocalInitiator ? (wheelAngle + extraRotations * 2 * Math.PI + Math.random() * 2 * Math.PI) : remoteTargetAngle;
+      const duration = 3500;
+      const start = performance.now();
+      const initialAngle = wheelAngle;
+
+      if (isLocalInitiator) {
+        broadcastAction('spin_wheel', { targetAngle: targetAngle });
+      }
+
+      function animateSpin(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+
+        wheelAngle = initialAngle + (targetAngle - initialAngle) * ease;
+        drawWheel(wheelAngle);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          isSpinning = false;
+          btn.disabled = false;
+          determineWheelWinner();
+        }
+      }
+      requestAnimationFrame(animateSpin);
+    }
+
+    function determineWheelWinner() {
+      const numSegments = punishments.length;
+      const arcSize = (2 * Math.PI) / numSegments;
+      let normalized = (wheelAngle + Math.PI / 2) % (2 * Math.PI);
+      if (normalized < 0) normalized += 2 * Math.PI;
+      
+      const winningIndex = Math.floor((2 * Math.PI - normalized) / arcSize) % numSegments;
+      const item = punishments[winningIndex];
+
+      document.getElementById('wheel-result').innerHTML = `
+        <span class="text-red-700 font-extrabold text-sm">العقوبة المقررة: ${item.text}</span>
+      `;
+      celebrateConfetti();
+      playSound('gavel');
+      triggerHapticFeedback([100, 50, 100, 50, 150]);
+    }
+
+    // --- SHARE VERDICT ---
+    function shareVerdict() {
+      if (!gameState.lastVerdict) return;
+      const v = gameState.lastVerdict;
+      const text = `⚖️ حكم صادر من محكمة الفوضى المنزلية 🏠🔨\n\n👤 المحكوم: ${gameState.players[v.accusedKey].name}\n🔢 صافي النقاط: ${v.net_points} نقطة\n👨‍⚖️ منطوق الحكم: ${v.verdict_comment}\n\nجرّب حظك في المحكمة الآن!`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: "محكمة الفوضى المنزلية",
+          text: text
+        }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text);
+        showToast("📋 تم نسخ ملخص الحكم لمشاركته!", "success");
+      }
+    }
+
+    // --- PHONE CONNECT & INSTALL MODALS ---
+    function openInstallAppModal() {
+      document.getElementById('install-app-modal').classList.remove('hidden');
+      const container = document.getElementById('qrcode-container');
+      container.innerHTML = '';
+      
+      const mobileUrl = window.location.href.includes('http') ? window.location.href : "http://192.168.1.214:8080";
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(container, {
+          text: mobileUrl,
+          width: 130,
+          height: 130,
+          colorDark: "#0f766e",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } else {
+        container.innerHTML = `<span class="text-xs text-teal-800 font-bold">${mobileUrl}</span>`;
+      }
+      triggerHapticFeedback([30]);
+    }
+
+    function closeInstallAppModal() {
+      document.getElementById('install-app-modal').classList.add('hidden');
+    }
+
+    function saveRoomSettings() {
+      const newRoom = document.getElementById('setting-room-input').value.trim().toLowerCase();
+      if (!newRoom) return;
+      gameState.roomId = newRoom;
+      saveStateToLocalStorage();
+      updateUI();
+      if (mqttClient) {
+        mqttClient.end(true, () => {
+          initRealtimeSync();
+        });
+      } else {
+        initRealtimeSync();
+      }
+      showToast(`🔑 تم الانضمام للغرفة (${newRoom}) بنجاح!`, "success");
+    }
+
+    function reconnectRealtime() {
+      if (mqttClient) {
+        mqttClient.end(true, () => initRealtimeSync());
+      } else {
+        initRealtimeSync();
+      }
+      showToast("🔄 جارٍ إعادة الاتصال بالمزامنة الحية...", "info");
+    }
+
+    // --- HISTORY LOG TAB ---
+    function renderHistoryList() {
+      const listEl = document.getElementById('history-list');
+      const emptyEl = document.getElementById('history-empty-state');
+      listEl.innerHTML = '';
+
+      if (gameState.history.length === 0) {
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+      emptyEl.classList.add('hidden');
+
+      gameState.history.forEach((item, index) => {
+        const accused = gameState.players[item.accusedKey] || { name: 'المتهم', avatar: '🧔' };
+        const isPos = item.net_points >= 0;
+
+        const row = document.createElement('div');
+        row.className = "bg-[#fdfbf7] p-3.5 rounded-2xl shadow-card border border-teal-100/80 flex items-center justify-between gap-3";
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-2xl w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200">
+              ${accused.avatar}
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-extrabold text-xs text-slate-800">${accused.name}</h4>
+                <span class="text-[10px] text-slate-400 font-mono">${item.timestamp || ''}</span>
+              </div>
+              <p class="text-[11px] text-slate-600 line-clamp-1 max-w-[180px] sm:max-w-xs font-medium">
+                ${item.verdict_comment}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-black font-tajawal px-2 py-1 rounded-lg ${isPos ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+              ${isPos ? '+' : ''}${item.net_points}
+            </span>
+            <button onclick="deleteHistoryItem(${index})" class="text-slate-400 hover:text-red-600 text-xs p-1">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+        listEl.appendChild(row);
+      });
+    }
+
+    function deleteHistoryItem(index) {
+      gameState.history.splice(index, 1);
+      saveStateToLocalStorage();
+      renderHistoryList();
+      broadcastCurrentState();
+      showToast("تم حذف القضية من السجل", "info");
+    }
+
+    function clearHistoryConfirmation() {
+      if (confirm("هل أنت متأكد من مسح جميع سجلات القضايا السابقة للطرفين؟")) {
+        gameState.history = [];
+        saveStateToLocalStorage();
+        renderHistoryList();
+        broadcastCurrentState();
+        showToast("تم مسح السجل القضائي بالكامل", "info");
+      }
+    }
+
+    // --- STATS TAB ---
+    function renderStats() {
+      const hScore = gameState.players.husband.score;
+      const wScore = gameState.players.wife.score;
+
+      document.getElementById('stats-score-husband').textContent = `${hScore} نقطة`;
+      document.getElementById('stats-score-wife').textContent = `${wScore} نقطة`;
+      document.getElementById('stats-name-husband').textContent = gameState.players.husband.name;
+      document.getElementById('stats-name-wife').textContent = gameState.players.wife.name;
+
+      const maxScore = Math.max(Math.abs(hScore), Math.abs(wScore), 50);
+      const hPercent = Math.min(Math.max(((hScore + 50) / 100) * 100, 10), 90);
+      const wPercent = Math.min(Math.max(((wScore + 50) / 100) * 100, 10), 90);
+
+      document.getElementById('stats-bar-husband').style.width = `${hPercent}%`;
+      document.getElementById('stats-bar-wife').style.width = `${wPercent}%`;
+
+      const rulerAvatar = document.getElementById('stats-ruler-avatar');
+      const rulerName = document.getElementById('stats-ruler-name');
+      const rulerDiff = document.getElementById('stats-ruler-diff');
+
+      if (hScore > wScore) {
+        rulerAvatar.textContent = gameState.players.husband.avatar;
+        rulerName.textContent = gameState.players.husband.name;
+        rulerDiff.textContent = `متقدم بفارق +${hScore - wScore} نقطة على العرش المنزلي!`;
+      } else if (wScore > hScore) {
+        rulerAvatar.textContent = gameState.players.wife.avatar;
+        rulerName.textContent = gameState.players.wife.name;
+        rulerDiff.textContent = `متقدمة بفارق +${wScore - hScore} نقطة على العرش المنزلي!`;
+      } else {
+        rulerAvatar.textContent = "🤝";
+        rulerName.textContent = "تعادل دبلوماسي";
+        rulerDiff.textContent = "النقاط متساوية في معركة النظافة!";
+      }
+    }
+
+    // --- SETTINGS ACTIONS ---
+    function saveApiKeySettings() {
+      const val = document.getElementById('api-key-input').value.trim();
+      gameState.apiKey = val || DEFAULT_API_KEY;
+      saveStateToLocalStorage();
+      showToast("💾 تم حفظ مفتاح API بنجاح!", "success");
+    }
+
+    function resetDefaultApiKey() {
+      gameState.apiKey = DEFAULT_API_KEY;
+      document.getElementById('api-key-input').value = DEFAULT_API_KEY;
+      saveStateToLocalStorage();
+      showToast("🔄 تم استعادة المفتاح الافتراضي!", "info");
+    }
+
+    function toggleApiKeyVisibility() {
+      const input = document.getElementById('api-key-input');
+      const icon = document.getElementById('eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function savePlayerSettings() {
+      const hName = document.getElementById('setting-husband-name').value.trim();
+      const wName = document.getElementById('setting-wife-name').value.trim();
+      if (hName) gameState.players.husband.name = hName;
+      if (wName) gameState.players.wife.name = wName;
+      saveStateToLocalStorage();
+      updateUI();
+      broadcastCurrentState();
+      showToast("✅ تم تحديث ونشر الأسماء للطرف الآخر!", "success");
+    }
+
+    function toggleSoundSetting(checked) {
+      gameState.soundEnabled = checked;
+      saveStateToLocalStorage();
+      showToast(checked ? "🔊 تم تفعيل الأصوات والاهتزاز" : "🔇 تم كتم الأصوات", "info");
+    }
+
+    function resetScoresConfirmation() {
+      if (confirm("هل تريد تصفير نقاط جميع اللاعبين في الغرفة المشتركة؟")) {
+        gameState.players.husband.score = 0;
+        gameState.players.wife.score = 0;
+        saveStateToLocalStorage();
+        updateUI();
+        broadcastAction('reset_scores');
+        showToast("🔄 تم تصفير العداد للطرفين!", "info");
+      }
+    }
+
+    function loadDemoHistory() {
+      gameState.history = [
+        {
+          accusedKey: "husband",
+          net_points: -15,
+          timestamp: "10:30 ص",
+          date: "اليوم",
+          verdict_comment: "تم رصد جورب لأشرف في الصالة وحذاء غير موضوع في الخزانة!"
+        },
+        {
+          accusedKey: "wife",
+          net_points: 25,
+          timestamp: "02:15 م",
+          date: "أمس",
+          verdict_comment: "سارة جعلت المطبخ يلمع كالألماس ورائحة العود تملأ المكان."
+        }
+      ];
+      gameState.players.husband.score = -5;
+      gameState.players.wife.score = 25;
+      saveStateToLocalStorage();
+      updateUI();
+      renderHistoryList();
+      broadcastCurrentState();
+      showToast("✨ تم تحميل ونشر بيانات تجريبية لأشرف وسارة!", "success");
+    }
+
+    // --- SYNTHESIZED SOUND EFFECTS (Web Audio API) ---
+    function playSound(type) {
+      if (!gameState.soundEnabled) return;
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        if (type === 'gavel') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.3);
+          gain.gain.setValueAtTime(1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        } else if (type === 'click') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+        } else if (type === 'success') {
+          [523.25, 659.25, 783.99].forEach((freq, i) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime + i * 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.4);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime + i * 0.1);
+            osc.stop(audioCtx.currentTime + i * 0.1 + 0.4);
+          });
+        }
+      } catch (e) {
+      }
+    }
+
+    // --- HAPTIC VIBRATION (FOR SAMSUNG & IPHONE) ---
+    function triggerHapticFeedback(pattern = [30]) {
+      if (!gameState.soundEnabled) return;
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        try {
+          navigator.vibrate(pattern);
+        } catch (e) {}
+      }
+    }
+
+    // --- CELEBRATION EFFECTS ---
+    function celebrateConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.7 }
+        });
+      }
+    }
+
+    // --- TOAST NOTIFIER ---
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
+
+      msgEl.textContent = message;
+      iconEl.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+
+      toast.classList.remove('-translate-y-20');
+      toast.classList.add('translate-y-0');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0');
+        toast.classList.add('-translate-y-20');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
