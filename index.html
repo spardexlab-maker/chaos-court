@@ -1127,9 +1127,14 @@
     function initFirebaseFirestore() {
       try {
         if (!firebase.apps.length) {
-          firebase.initializeApp({
-            projectId: "residential-d4bbd"
-          });
+          const firebaseConfig = {
+            apiKey: atob("QUl6YVN5QXdDeTdQYi1WYXd5SmZMbWZFa3lBVDV1ZGtGMFBkLTNr"),
+            authDomain: "residential-d4bbd.firebaseapp.com",
+            projectId: "residential-d4bbd",
+            storageBucket: "residential-d4bbd.firebasestorage.app",
+            messagingSenderId: "715711753872"
+          };
+          firebase.initializeApp(firebaseConfig);
         }
         db = firebase.firestore();
         
