@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chaos-court-v2';
+const CACHE_NAME = 'chaos-court-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -6,11 +6,6 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
-  );
   self.skipWaiting();
 });
 
@@ -18,7 +13,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.map((key) => caches.delete(key))
       );
     })
   );
@@ -27,7 +22,12 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  // Network first, fallback to cache
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request)
+      .then((networkResponse) => {
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

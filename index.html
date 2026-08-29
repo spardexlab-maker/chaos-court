@@ -348,20 +348,18 @@
           <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">جلسة علنية أونلاين</span>
         </div>
 
-        <!-- Target Accused Selector -->
-        <div class="bg-amber-50/70 p-2.5 rounded-2xl border border-amber-200/70">
-          <div class="text-xs font-bold text-slate-600 mb-1.5 flex items-center justify-between">
-            <span>من هو المتهم في هذه الصورة؟</span>
-            <span id="selected-accused-badge" class="text-[11px] text-blue-700 font-extrabold">المتهم: أشرف 🧔‍♂️</span>
+        <!-- Target Accused Banner (Automatically locked to the opponent) -->
+        <div class="bg-amber-50/90 p-3 rounded-2xl border-2 border-amber-300 shadow-sm flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xl" id="accused-target-icon">🎯</span>
+            <div>
+              <span class="text-[10px] text-slate-500 font-bold block">الطرف الموجه ضده البلاغ:</span>
+              <h3 id="selected-accused-badge" class="text-xs font-black text-slate-900">المتهم: سارة 🧕</h3>
+            </div>
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="selectAccused('husband')" id="btn-select-husband" class="py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95">
-              <span>🧔‍♂️ أشرف</span>
-            </button>
-            <button type="button" onclick="selectAccused('wife')" id="btn-select-wife" class="py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95">
-              <span>🧕 سارة</span>
-            </button>
-          </div>
+          <span class="text-[10px] bg-amber-200/80 text-amber-900 px-2.5 py-1 rounded-xl font-black">
+            خصم تلقائي 🔒
+          </span>
         </div>
 
         <!-- Camera Upload Dropzone / Button -->
@@ -1404,9 +1402,6 @@
       document.getElementById('display-husband-avatar').textContent = gameState.players.husband.avatar;
       document.getElementById('display-wife-avatar').textContent = gameState.players.wife.avatar;
 
-      document.getElementById('btn-select-husband').querySelector('span').textContent = `🧔‍♂️ ${gameState.players.husband.name}`;
-      document.getElementById('btn-select-wife').querySelector('span').textContent = `🧕 ${gameState.players.wife.name}`;
-
       updateRankBadge('husband', gameState.players.husband.score);
       updateRankBadge('wife', gameState.players.wife.score);
 
@@ -1446,33 +1441,29 @@
     }
 
     function selectAccused(playerKey) {
-      gameState.currentAccused = playerKey;
+      if (playerKey === gameState.myRole) {
+        showToast("⚠️ لا يمكنك توجيه تهمة لنفسك! التهمة موجهة للخصم تلقائياً.", "info");
+        return;
+      }
+      gameState.currentAccused = (gameState.myRole === 'husband') ? 'wife' : 'husband';
       highlightSelectedAccused();
-      playSound('click');
-      triggerHapticFeedback([30]);
     }
 
     function highlightSelectedAccused() {
-      const btnH = document.getElementById('btn-select-husband');
-      const btnW = document.getElementById('btn-select-wife');
+      // Accused is strictly the opponent
+      gameState.currentAccused = (gameState.myRole === 'husband') ? 'wife' : 'husband';
       const cardH = document.getElementById('card-player-husband');
       const cardW = document.getElementById('card-player-wife');
       const badge = document.getElementById('selected-accused-badge');
 
-      if (gameState.currentAccused === 'husband') {
-        btnH.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95";
-        btnW.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95";
-        cardH.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
-        cardW.classList.remove('ring-2', 'ring-pink-500', 'shadow-md');
-        badge.innerHTML = `المتهم: ${gameState.players.husband.name} ${gameState.players.husband.avatar}`;
-        badge.className = "text-[11px] text-blue-700 font-extrabold";
+      if (gameState.currentAccused === 'wife') {
+        if (cardW) cardW.classList.add('ring-2', 'ring-pink-500', 'shadow-md');
+        if (cardH) cardH.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
+        if (badge) badge.innerHTML = `المتهمة: <span class="text-pink-600 font-black">${gameState.players.wife.name} ${gameState.players.wife.avatar}</span>`;
       } else {
-        btnW.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-pink-500 text-white border-pink-600 shadow-sm active:scale-95";
-        btnH.className = "py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-blue-300 active:scale-95";
-        cardW.classList.add('ring-2', 'ring-pink-500', 'shadow-md');
-        cardH.classList.remove('ring-2', 'ring-blue-500', 'shadow-md');
-        badge.innerHTML = `المتهمة: ${gameState.players.wife.name} ${gameState.players.wife.avatar}`;
-        badge.className = "text-[11px] text-pink-700 font-extrabold";
+        if (cardH) cardH.classList.add('ring-2', 'ring-blue-500', 'shadow-md');
+        if (cardW) cardW.classList.remove('ring-2', 'ring-pink-500', 'shadow-md');
+        if (badge) badge.innerHTML = `المتهم: <span class="text-blue-600 font-black">${gameState.players.husband.name} ${gameState.players.husband.avatar}</span>`;
       }
     }
 
