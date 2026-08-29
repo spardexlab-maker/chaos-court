@@ -92,7 +92,6 @@
       overflow-x: hidden;
     }
     
-    /* Native App Feel Smooth Scrolling */
     html {
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -111,7 +110,6 @@
       border-radius: 999px;
     }
 
-    /* Pulse Gavel Animation */
     @keyframes gavelHit {
       0% { transform: rotate(0deg); }
       20% { transform: rotate(-25deg); }
@@ -123,7 +121,6 @@
       animation: gavelHit 0.6s ease-in-out;
     }
 
-    /* Shimmer effect for AI loading */
     @keyframes shimmer {
       100% { transform: translateX(100%); }
     }
@@ -140,7 +137,6 @@
       content: '';
     }
 
-    /* Slow spinning animation for icons */
     @keyframes spinSlow {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -149,7 +145,6 @@
       animation: spinSlow 8s linear infinite;
     }
 
-    /* Online pulse badge */
     @keyframes pulseGreen {
       0% { transform: scale(0.95); opacity: 0.8; }
       50% { transform: scale(1.15); opacity: 1; }
@@ -159,7 +154,6 @@
       animation: pulseGreen 2s infinite ease-in-out;
     }
 
-    /* Bottom Safe Area Padding for Fixed Nav */
     .nav-safe-bottom {
       padding-bottom: max(var(--sab), 10px);
     }
@@ -167,8 +161,67 @@
 </head>
 <body class="bg-[#e0f2f1] text-slate-800 min-h-screen flex flex-col items-center selection:bg-teal-500 selection:text-white">
 
-  <!-- Mobile App Frame Container -->
-  <main class="w-full max-w-md min-h-screen px-3 flex flex-col relative">
+  <!-- ==================== 1. LOGIN SCREEN ==================== -->
+  <div id="login-screen" class="w-full max-w-md min-h-[90vh] px-4 flex flex-col justify-center items-center">
+    <div class="w-full bg-[#fdfbf7] rounded-3xl p-6 sm:p-8 shadow-card border-2 border-teal-200/80 flex flex-col gap-4 text-center relative overflow-hidden">
+      <div class="absolute -right-8 -top-8 text-8xl text-teal-900/5 select-none pointer-events-none">⚖️</div>
+      
+      <div class="w-20 h-20 bg-gradient-to-tr from-teal-800 to-cyan-600 text-white rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-lg shadow-teal-900/20 border-2 border-white">
+        ⚖️
+      </div>
+
+      <div>
+        <h1 class="text-2xl font-black text-teal-950">محكمة الفوضى المنزلية</h1>
+        <p class="text-xs text-teal-700 font-bold mt-1">سجّل دخولك لبدء الجلسة القضائية أونلاين</p>
+      </div>
+
+      <!-- Quick Preset Account Buttons -->
+      <div class="grid grid-cols-2 gap-2 my-1">
+        <button type="button" onclick="fillLoginPreset('Sarah', '12345')" class="p-2.5 bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-pink-950">
+          <span class="text-lg">🧕</span>
+          <span>سارة (Sarah)</span>
+        </button>
+
+        <button type="button" onclick="fillLoginPreset('Ashraf', 'HNV666')" class="p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-blue-950">
+          <span class="text-lg">🧔‍♂️</span>
+          <span>أشرف (Ashraf)</span>
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form onsubmit="handleLoginSubmit(event)" class="flex flex-col gap-3 text-right">
+        <div>
+          <label class="text-xs font-black text-slate-700 block mb-1">اسم المستخدم (Username):</label>
+          <div class="relative">
+            <input type="text" id="login-username" required class="w-full bg-white border border-slate-300 rounded-2xl px-3.5 py-2.5 text-xs font-bold text-slate-800 pl-9 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600" placeholder="أدخل اسم المستخدم (Sarah / Ashraf)" />
+            <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-black text-slate-700 block mb-1">كلمة المرور (Password):</label>
+          <div class="relative">
+            <input type="password" id="login-password" required class="w-full bg-white border border-slate-300 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 pl-9 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600" placeholder="أدخل كلمة المرور" />
+            <button type="button" onclick="toggleLoginPassword()" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+              <i class="fa-solid fa-eye" id="login-eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full mt-2 py-3.5 bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-700 hover:from-teal-900 hover:to-cyan-800 text-white rounded-2xl font-black text-sm shadow-lg shadow-teal-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+          <span>دخول المحكمة</span>
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+      </form>
+
+      <div class="text-[11px] text-slate-400 font-medium pt-2 border-t border-slate-100">
+        محكمة الفوضى المنزلية • جلسات علنية مشفرة ومباشرة 🔒
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 2. MAIN APP INTERFACE ==================== -->
+  <main id="app-screen" class="hidden w-full max-w-md min-h-screen px-3 flex flex-col relative">
 
     <!-- Top Real-time Status Bar & Profile Selector -->
     <div class="w-full bg-white/85 backdrop-blur-md rounded-2xl p-2 px-3 mb-2 border border-teal-200/80 shadow-sm flex items-center justify-between sticky top-1 z-30">
@@ -179,18 +232,17 @@
         <span id="sync-status-text" class="text-[11px] font-bold text-teal-900">أونلاين متزامن 🟢</span>
       </div>
 
-      <!-- Current Player Profile Indicator & Switcher -->
-      <div class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 px-2.5 py-0.5 rounded-xl border border-amber-200 cursor-pointer active:scale-95 transition-all" onclick="toggleCurrentActiveUser()">
-        <span class="text-[10px] text-slate-500 font-bold">أنت:</span>
+      <!-- Current Logged In Profile Badge -->
+      <div class="flex items-center gap-1.5 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200">
+        <span class="text-[10px] text-slate-500 font-bold">المتسجل:</span>
         <span id="header-current-user-avatar" class="text-xs">🧔‍♂️</span>
-        <span id="header-current-user-name" class="text-xs font-black text-amber-900">أشرف</span>
-        <i class="fa-solid fa-repeat text-[9px] text-amber-700 mr-0.5"></i>
+        <span id="header-current-user-name" class="text-xs font-black text-amber-950">أشرف</span>
       </div>
 
-      <!-- Native Install App Button -->
-      <button onclick="openInstallAppModal()" class="text-[10px] bg-teal-800 text-white hover:bg-teal-900 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-transform">
-        <i class="fa-solid fa-download text-[9px]"></i>
-        <span>تثبيت التطبيق 📲</span>
+      <!-- Logout Button -->
+      <button onclick="handleLogout()" class="text-[10px] bg-red-50 hover:bg-red-100 text-red-700 px-2.5 py-1 rounded-xl font-bold flex items-center gap-1 border border-red-200 transition-colors">
+        <i class="fa-solid fa-right-from-bracket text-[9px]"></i>
+        <span>خروج</span>
       </button>
     </div>
 
@@ -199,7 +251,7 @@
       <div class="flex items-center justify-between px-1 mb-1">
         <button onclick="openInstallAppModal()" class="text-[11px] bg-teal-700/10 hover:bg-teal-700/20 text-teal-900 px-2.5 py-1 rounded-full font-bold border border-teal-700/20 flex items-center gap-1 transition-all">
           <i class="fa-solid fa-mobile-screen text-teal-700"></i>
-          <span>آيفون / سامسونج 📱</span>
+          <span>تثبيت PWA 📲</span>
         </button>
 
         <div class="inline-flex items-center justify-center gap-1 px-3 py-1 bg-teal-800/10 rounded-full text-teal-900 text-[11px] font-bold border border-teal-700/10">
@@ -239,7 +291,6 @@
 
         <!-- Players Columns Grid -->
         <div class="grid grid-cols-2 gap-3 relative">
-          <!-- Divider VS badge -->
           <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-amber-50 border-2 border-amber-200 text-amber-900 font-black text-xs w-7 h-7 rounded-full flex items-center justify-center shadow z-10">
             VS
           </div>
@@ -342,7 +393,7 @@
           <!-- State 2: Image Preview -->
           <div id="image-preview-container" class="hidden flex-col items-center">
             <div class="relative w-full max-h-64 rounded-xl overflow-hidden border border-slate-200 bg-black/5 shadow-inner">
-              <img id="imagePreview" src="" alt="الدليل المقدم" class="w-full h-auto max-h-60 object-contain mx-auto" />
+              <img id="imagePreview" src="" alt="الدليل المقدم" class="w-full h-auto max-h-60 object-contain mx-auto cursor-pointer" onclick="openPhotoLightbox(this.src)" />
               <button onclick="clearSelectedImage()" class="absolute top-2 left-2 bg-red-600/90 text-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:bg-red-700 transition-colors">
                 <i class="fa-solid fa-xmark"></i>
               </button>
@@ -357,25 +408,29 @@
           </div>
         </div>
 
-        <!-- Manual Tone / Bias Options -->
-        <div class="flex gap-2">
-          <button type="button" onclick="setCaseTone('chaos')" id="btn-tone-chaos" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-red-50 text-red-700 border-red-200 hover:border-red-400 active:scale-95">
-            <span>❌ سلبي (فوضى)</span>
-          </button>
-          <button type="button" onclick="setCaseTone('auto')" id="btn-tone-auto" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-teal-700 text-white border-teal-800 shadow-sm active:scale-95">
-            <span>🤖 كشف تلقائي</span>
-          </button>
-          <button type="button" onclick="setCaseTone('tidy')" id="btn-tone-tidy" class="flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-emerald-50 text-emerald-700 border-emerald-200 hover:border-emerald-400 active:scale-95">
-            <span>✅ إيجابي (ترتيب)</span>
-          </button>
+        <!-- Optional Violation Note / Description for Direct Penalty -->
+        <div>
+          <input type="text" id="manual-violation-note" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:border-teal-500" placeholder="وصف المخالفة (اختياري، مثلاً: لم يغلق الباب، ترك الكوب...)" />
         </div>
 
-        <!-- Main Execute Button: Ask Gemini AI Judge -->
-        <button id="btn-submit-judge" onclick="runAiJudgeAnalysis()" class="w-full py-3.5 px-4 bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-700 hover:from-teal-900 hover:to-cyan-800 text-white rounded-2xl font-black text-sm sm:text-base shadow-lg shadow-teal-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 border border-teal-600/30 relative overflow-hidden group">
-          <span class="text-xl group-hover:scale-125 transition-transform" id="gavel-icon">⚖️</span>
-          <span>اطلب حكم القاضي الذكي (Gemini)</span>
-          <i class="fa-solid fa-sparkles text-amber-300 text-sm animate-pulse"></i>
-        </button>
+        <!-- Dual Action Buttons: AI Analysis OR Direct -5 Points Penalty -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          
+          <!-- Option A: Direct -5 Penalty Without AI -->
+          <button type="button" onclick="submitDirectViolation(5)" class="py-3 px-3 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white rounded-2xl font-black text-xs shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 border border-orange-400/30">
+            <i class="fa-solid fa-bolt-lightning text-yellow-300"></i>
+            <span>خصم مباشر -5 نقاط (بدون AI) ⚡</span>
+          </button>
+
+          <!-- Option B: Ask Gemini AI Judge -->
+          <button id="btn-submit-judge" onclick="runAiJudgeAnalysis()" class="py-3 px-3 bg-gradient-to-r from-teal-800 via-teal-700 to-cyan-700 hover:from-teal-900 hover:to-cyan-800 text-white rounded-2xl font-black text-xs shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-1.5 border border-teal-600/30 group">
+            <span class="text-sm group-hover:scale-125 transition-transform" id="gavel-icon">⚖️</span>
+            <span>حكم الذكاء الاصطناعي (Gemini)</span>
+            <i class="fa-solid fa-sparkles text-amber-300 text-xs animate-pulse"></i>
+          </button>
+
+        </div>
+
       </section>
 
       <!-- AI LOADING / JUDGING STATE CARD -->
@@ -400,11 +455,20 @@
           <div class="flex items-center gap-2">
             <span class="text-2xl">📜</span>
             <div>
-              <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">حكم قضائي بات ومبرم</span>
-              <h2 class="font-black text-teal-950 text-base">منطوق الحكم الساخر</h2>
+              <span id="verdict-tag-title" class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">حكم قضائي بات ومبرم</span>
+              <h2 class="font-black text-teal-950 text-base">منطوق الحكم والمخالفة</h2>
             </div>
           </div>
           <span id="verdict-timestamp" class="text-[11px] text-slate-400 font-mono">الآن</span>
+        </div>
+
+        <!-- Attached Photo Preview (Seen by Competitor in Realtime!) -->
+        <div id="verdict-photo-container" class="hidden flex-col items-center w-full bg-slate-100 p-2 rounded-2xl border border-slate-200">
+          <div class="text-[11px] font-bold text-slate-600 mb-1 w-full flex items-center justify-between">
+            <span>📸 صورة الدليل الموثقة (انقر للتكبير):</span>
+            <span class="text-[10px] text-teal-700">مباشر أونلاين ⚡</span>
+          </div>
+          <img id="verdict-attached-image" src="" alt="صورة الدليل" class="w-full max-h-48 object-cover rounded-xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity" onclick="openPhotoLightbox(this.src)" />
         </div>
 
         <!-- Net Score & Accused Header -->
@@ -420,7 +484,7 @@
           <div class="text-left">
             <div class="text-[10px] text-slate-400 font-bold">صافي النقاط:</div>
             <div id="verdict-net-points" class="text-2xl font-black font-tajawal text-red-600 flex items-center gap-1 justify-end">
-              <span>-15</span>
+              <span>-5</span>
               <span class="text-xs">نقطة</span>
             </div>
           </div>
@@ -434,20 +498,20 @@
           </div>
           <div id="verdict-breakdown-container" class="flex flex-wrap gap-1.5">
             <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-red-100 text-red-800 border border-red-200 flex items-center gap-1.5">
-              <span>🧦 كوب شاي فارغ على الطاولة</span>
+              <span>🧦 مخالفة مباشرة مرصودة بالعين</span>
               <span class="bg-red-200 text-red-900 px-1 rounded text-[10px]">-5</span>
             </span>
           </div>
         </div>
 
-        <!-- Judge Sarcastic Commentary Parchment -->
+        <!-- Judge Commentary Parchment -->
         <div class="bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 text-slate-800 relative">
           <div class="flex items-center gap-1.5 text-xs font-bold text-amber-900 mb-1.5">
             <span class="text-base">👨‍⚖️</span>
-            <span>حيثيات الحكم من حضرة القاضي:</span>
+            <span>حيثيات القرار:</span>
           </div>
           <p id="verdict-judge-comment" class="text-xs sm:text-sm leading-relaxed text-slate-700 font-medium">
-            "بعد فحص الصورة تبين بوضوح وجود آثار استرخاء مفرط وإهمال جسيم في لم الشمل المنزلي..."
+            "تم تسجيل المخالفة بنجاح وخصم النقاط من رصيد المتهم!"
           </p>
         </div>
 
@@ -480,7 +544,7 @@
           <span class="text-xl">📋</span>
           <div>
             <h2 class="font-extrabold text-teal-950 text-base">سجل الأحكام المشترك</h2>
-            <p class="text-[11px] text-slate-500">أرشيف سحابي لحظي بين أشرف وسارة</p>
+            <p class="text-[11px] text-slate-500">مع صور الأدلة المتبادلة بين أشرف وسارة</p>
           </div>
         </div>
         <button onclick="clearHistoryConfirmation()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-2.5 py-1 rounded-xl font-bold transition-colors">
@@ -587,117 +651,41 @@
     <!-- TAB 4: SETTINGS (الإعدادات) -->
     <div id="tab-settings" class="tab-content hidden flex-1 flex flex-col gap-4">
       
-      <!-- Room Code & Cloud Sync Card -->
+      <!-- Current Account & Room Card -->
       <div class="bg-gradient-to-br from-teal-800 to-cyan-900 text-white rounded-3xl p-4 shadow-card flex flex-col gap-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <span class="text-xl">🌐</span>
+            <span class="text-xl">👤</span>
             <div>
-              <h2 class="font-extrabold text-sm text-amber-300">إعدادات الغرفة والمزامنة السحابية</h2>
-              <p class="text-[11px] text-teal-200">للربط الفوري بين هواتف أشرف وسارة</p>
+              <h2 class="font-extrabold text-sm text-amber-300">الحساب والغرفة الحالية</h2>
+              <p class="text-[11px] text-teal-200" id="settings-user-status">المستخدم: أشرف (Ashraf)</p>
             </div>
           </div>
-          <span class="bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full">سحابي لايف</span>
-        </div>
-
-        <div>
-          <label class="text-[11px] font-bold text-teal-100 block mb-1">رمز الغرفة المشتركة (Room Code):</label>
-          <div class="flex gap-1.5">
-            <input type="text" id="setting-room-input" class="flex-1 bg-white/10 border border-teal-400/40 rounded-xl px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400" value="ashraf-sarah" />
-            <button onclick="saveRoomSettings()" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors">
-              انضمام
-            </button>
-          </div>
-          <p class="text-[10px] text-teal-300 mt-1">أي هاتف يدخل نفس رمز الغرفة سيتزامن تلقائياً بلحظتها!</p>
-        </div>
-
-        <div class="flex justify-between items-center pt-2 border-t border-teal-700/50">
-          <button onclick="openInstallAppModal()" class="text-xs text-amber-300 hover:underline font-bold flex items-center gap-1">
-            <i class="fa-solid fa-mobile-screen-button"></i>
-            <span>تثبيت التطبيق على الآيفون والسامسونج</span>
+          <button onclick="handleLogout()" class="bg-red-500/80 hover:bg-red-600 text-white text-[11px] font-bold px-3 py-1 rounded-xl transition-colors">
+            تسجيل خروج 🚪
           </button>
+        </div>
+
+        <div class="pt-2 border-t border-teal-700/50 flex justify-between items-center">
+          <span class="text-xs text-teal-100">الغرفة المشتركة: <strong class="text-amber-300 font-mono">ashraf-sarah</strong></span>
           <button onclick="broadcastCurrentState()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg font-bold">
-            🔄 مزامنة قسرية الآن
+            🔄 مزامنة قسرية
           </button>
         </div>
       </div>
 
-      <!-- Player Identity Selection Card -->
-      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
+      <!-- App Install Section -->
+      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="text-xl">📱</span>
           <div>
-            <h2 class="font-extrabold text-teal-950 text-sm">أنت تستخدم هذا الهاتف كـ:</h2>
-            <p class="text-[11px] text-slate-500">حدد هويتك على هذا الجهاز</p>
+            <h3 class="font-extrabold text-teal-950 text-xs">تثبيت التطبيق على الهواتف</h3>
+            <p class="text-[10px] text-slate-500">يعمل بكامل الشاشة على آيفون وسامسونج</p>
           </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="setUserProfile('husband')" id="btn-user-husband" class="py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95">
-            <span>🧔‍♂️ أنا أشرف</span>
-          </button>
-          <button type="button" onclick="setUserProfile('wife')" id="btn-user-wife" class="py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95">
-            <span>🧕 أنا سارة</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Player Names Customization -->
-      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">👥</span>
-          <div>
-            <h2 class="font-extrabold text-teal-950 text-sm">تخصيص أسماء الخصوم</h2>
-            <p class="text-[11px] text-slate-500">عدل الأسماء كما تحب أن تظهر</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-[11px] font-bold text-blue-900 block mb-1">الطرف الأول 🧔‍♂️</label>
-            <input type="text" id="setting-husband-name" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-blue-500" value="أشرف" />
-          </div>
-          <div>
-            <label class="text-[11px] font-bold text-pink-900 block mb-1">الطرف الثاني 🧕</label>
-            <input type="text" id="setting-wife-name" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-pink-500" value="سارة" />
-          </div>
-        </div>
-
-        <button onclick="savePlayerSettings()" class="w-full bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold py-2 rounded-xl transition-colors active:scale-95">
-          حفظ ونشر التعديل للطرف الآخر
+        <button onclick="openInstallAppModal()" class="bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-colors">
+          عرض الإرشادات 📲
         </button>
-      </div>
-
-      <!-- API Key Card -->
-      <div class="bg-[#fdfbf7] rounded-3xl p-4 shadow-card border border-teal-100 flex flex-col gap-3">
-        <div class="flex items-center gap-2">
-          <span class="text-xl">🔑</span>
-          <div>
-            <h2 class="font-extrabold text-teal-950 text-sm">مفتاح Google Gemini API</h2>
-            <p class="text-[11px] text-slate-500">يستخدم لتحليل الصور بالذكاء الاصطناعي</p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-1.5">
-          <div class="relative">
-            <input type="password" id="api-key-input" class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 pr-9 focus:outline-none focus:border-teal-500" placeholder="أدخل مفتاح Gemini API هنا" />
-            <button onclick="toggleApiKeyVisibility()" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
-              <i class="fa-solid fa-eye" id="eye-icon"></i>
-            </button>
-          </div>
-          <p class="text-[10px] text-teal-800">
-            * تم تعيين المفتاح الافتراضي تلقائياً.
-          </p>
-        </div>
-
-        <div class="flex gap-2">
-          <button onclick="saveApiKeySettings()" class="flex-1 bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold py-2 rounded-xl transition-colors active:scale-95">
-            💾 حفظ المفتاح
-          </button>
-          <button onclick="resetDefaultApiKey()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl transition-colors active:scale-95">
-            🔄 استعادة الافتراضي
-          </button>
-        </div>
       </div>
 
       <!-- Sound & Reset -->
@@ -728,14 +716,13 @@
 
       <!-- About App Footer -->
       <div class="text-center py-2 text-slate-400 text-xs">
-        محكمة الفوضى المنزلية المباشرة v2.0 • لأشرف وسارة ❤️🔨
+        محكمة الفوضى المنزلية المباشرة v3.0 • لأشرف وسارة ❤️🔨
       </div>
     </div>
 
     <!-- BOTTOM FIXED NAVIGATION BAR (SAFE-AREA OPTIMIZED) -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-teal-100 px-3 pt-2 nav-safe-bottom shadow-nav z-40 flex justify-around items-center rounded-t-3xl">
       
-      <!-- Tab 1 -->
       <button onclick="switchTab('court')" id="nav-court" class="nav-btn flex flex-col items-center gap-1 text-teal-800 font-bold transition-all transform active:scale-90">
         <div class="w-10 h-7 rounded-full bg-teal-100 text-teal-900 flex items-center justify-center text-sm shadow-sm transition-all nav-pill">
           ⚖️
@@ -743,7 +730,6 @@
         <span class="text-[10px]">القضايا</span>
       </button>
 
-      <!-- Tab 2 -->
       <button onclick="switchTab('history')" id="nav-history" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
         <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
           📋
@@ -751,7 +737,6 @@
         <span class="text-[10px]">السجل</span>
       </button>
 
-      <!-- Tab 3 -->
       <button onclick="switchTab('stats')" id="nav-stats" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
         <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
           📊
@@ -759,7 +744,6 @@
         <span class="text-[10px]">الإحصائيات</span>
       </button>
 
-      <!-- Tab 4 -->
       <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center gap-1 text-slate-400 font-medium transition-all transform active:scale-90">
         <div class="w-10 h-7 rounded-full bg-transparent flex items-center justify-center text-sm transition-all nav-pill">
           ⚙️
@@ -770,6 +754,17 @@
     </nav>
 
   </main>
+
+  <!-- MODAL: PHOTO FULLSCREEN LIGHTBOX -->
+  <div id="photo-lightbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-3" onclick="closePhotoLightbox()">
+    <div class="relative max-w-sm w-full flex flex-col items-center" onclick="event.stopPropagation()">
+      <button onclick="closePhotoLightbox()" class="absolute -top-10 left-0 bg-white/20 hover:bg-white/30 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img id="lightbox-image" src="" alt="صورة مكبرة" class="w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl border-2 border-white/20" />
+      <span class="text-xs text-white/80 font-bold mt-2">صورة الدليل المرفوعة</span>
+    </div>
+  </div>
 
   <!-- MODAL: NATIVE APP INSTALL GUIDE (IPHONE & SAMSUNG) -->
   <div id="install-app-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
@@ -788,7 +783,6 @@
         </div>
       </div>
 
-      <!-- Android / Samsung 1-Click Install Button -->
       <div id="pwa-install-native-container" class="hidden">
         <button id="pwa-install-btn" onclick="triggerNativePwaInstall()" class="w-full py-3 bg-gradient-to-r from-teal-700 to-emerald-600 hover:from-teal-800 hover:to-emerald-700 text-white rounded-2xl font-black text-xs shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-all">
           <i class="fa-solid fa-download text-sm"></i>
@@ -796,39 +790,33 @@
         </button>
       </div>
 
-      <!-- Device Specific Instructions Tabs -->
       <div class="bg-white p-3 rounded-2xl border border-slate-200 flex flex-col gap-2.5 shadow-sm">
         
-        <!-- iPhone 15 Pro Max Guide -->
         <div class="border-b border-slate-100 pb-2">
           <div class="flex items-center gap-2 text-xs font-black text-slate-800 mb-1">
             <i class="fa-brands fa-apple text-slate-900 text-sm"></i>
-            <span>لهواتف iPhone (عبر متصفح Safari):</span>
+            <span>لهواتف iPhone (Safari):</span>
           </div>
           <ol class="text-[11px] text-slate-600 space-y-1 pr-4 list-decimal font-medium">
             <li>افتح الصفحة في متصفح <strong>Safari</strong>.</li>
             <li>اضغط على زر المشاركة بالأسفل <span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold">📤 Share</span>.</li>
             <li>مرر للأسفل واختر <strong>"إضافة إلى الشاشة الرئيسية" (Add to Home Screen)</strong>.</li>
-            <li>سيظهر التطبيق بأيقونة الميزان ⚖️ على شاشتك الرئيسية ويعمل بكامل الشاشة!</li>
           </ol>
         </div>
 
-        <!-- Samsung S26 Ultra Guide -->
         <div>
           <div class="flex items-center gap-2 text-xs font-black text-blue-900 mb-1">
             <i class="fa-brands fa-android text-emerald-600 text-sm"></i>
-            <span>لهواتف Samsung (عبر Chrome أو Samsung Internet):</span>
+            <span>لهواتف Samsung (Chrome / Internet):</span>
           </div>
           <ol class="text-[11px] text-slate-600 space-y-1 pr-4 list-decimal font-medium">
-            <li>اضغط على الثلاث نقاط <span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold">⋮</span> في أعلى أو أسفل المتصفح.</li>
-            <li>اختر <strong>"تثبيت التطبيق" (Install App)</strong> أو <strong>"إضافة إلى الشاشة الرئيسية"</strong>.</li>
-            <li>يتم تثبيت التطبيق فوراً في درج التطبيقات والشاشة الرئيسية!</li>
+            <li>اضغط على الثلاث نقاط <span class="bg-slate-100 px-1.5 py-0.5 rounded text-[10px] font-bold">⋮</span>.</li>
+            <li>اختر <strong>"تثبيت التطبيق" (Install App)</strong> أو <strong>"إضافة للشاشة الرئيسية"</strong>.</li>
           </ol>
         </div>
 
       </div>
 
-      <!-- QR Code Section -->
       <div class="bg-teal-50/80 p-3 rounded-2xl border border-teal-200 flex flex-col items-center text-center">
         <span class="text-xs font-bold text-teal-950 mb-1">امسح الباركود لفتح التطبيق على الهاتف:</span>
         <div id="qrcode-container" class="bg-white p-2 rounded-xl border border-teal-300 shadow-sm my-1"></div>
@@ -840,7 +828,7 @@
     </div>
   </div>
 
-  <!-- MODAL 1: PUNISHMENT WHEEL (عجلة العقوبات) -->
+  <!-- MODAL: PUNISHMENT WHEEL (عجلة العقوبات) -->
   <div id="wheel-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col items-center text-center relative">
       <button onclick="closePunishmentWheel()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -855,7 +843,6 @@
         العقوبة ستُطبّق على الطرف الخاسر حالياً!
       </p>
 
-      <!-- Canvas Wheel Container -->
       <div class="relative w-64 h-64 my-2 flex items-center justify-center">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-red-600 text-2xl filter drop-shadow">
           ▼
@@ -863,7 +850,6 @@
         <canvas id="wheelCanvas" width="260" height="260" class="rounded-full shadow-lg border-4 border-amber-400"></canvas>
       </div>
 
-      <!-- Selected Punishment Display -->
       <div id="wheel-result" class="min-h-[44px] w-full bg-amber-50 rounded-2xl p-2 border border-amber-200 my-2 text-xs font-bold text-amber-950 flex items-center justify-center">
         اضغط على الزر لتدوير العجلة أمام الجميع!
       </div>
@@ -875,7 +861,7 @@
     </div>
   </div>
 
-  <!-- MODAL 2: APPEAL (استئناف الحكم) -->
+  <!-- MODAL: APPEAL (استئناف الحكم) -->
   <div id="appeal-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col gap-3 relative">
       <button onclick="closeAppealModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -891,12 +877,11 @@
       </div>
 
       <div class="bg-amber-50 p-2.5 rounded-2xl border border-amber-200 text-[11px] text-amber-900 font-medium">
-        ⚠️ <strong>تحذير قضائي:</strong> إذا كان العذر مقنعاً أو مضحكاً فسيتم خفض العقوبة للنصف! أما إذا كان عذراً واهياً فستتضاعف العقوبة فوراً!
+        ⚠️ <strong>تحذير قضائي:</strong> إذا كان العذر مقنعاً فسيتم خفض العقوبة للنصف، وإذا كان واهياً فستتضاعف العقوبة فوراً!
       </div>
 
-      <!-- Speech to Text & Input Area -->
       <div class="relative">
-        <textarea id="appeal-text" rows="3" class="w-full bg-white border border-slate-300 rounded-2xl p-3 text-xs text-slate-800 focus:outline-none focus:border-amber-500" placeholder="اكتب عذرك هنا... (مثال: كنت مشغولاً بتأمين مستقبل العائلة، أو الشراب سقط بفعل الجاذبية الأرضية!)"></textarea>
+        <textarea id="appeal-text" rows="3" class="w-full bg-white border border-slate-300 rounded-2xl p-3 text-xs text-slate-800 focus:outline-none focus:border-amber-500" placeholder="اكتب عذرك هنا..."></textarea>
         
         <button id="btn-speech" onclick="startSpeechRecognition()" class="absolute left-2.5 bottom-2.5 bg-amber-100 hover:bg-amber-200 text-amber-900 w-8 h-8 rounded-full flex items-center justify-center text-xs transition-colors" title="تسجيل صوتي">
           <i class="fa-solid fa-microphone"></i>
@@ -909,7 +894,7 @@
     </div>
   </div>
 
-  <!-- MODAL 3: POWER-UP CARDS (كروت القوة) -->
+  <!-- MODAL: POWER-UP CARDS (كروت القوة) -->
   <div id="power-cards-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-purple-300 flex flex-col gap-3 relative">
       <button onclick="closePowerCardsModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -926,7 +911,6 @@
 
       <div class="grid grid-cols-1 gap-2.5 max-h-80 overflow-y-auto pr-1">
         
-        <!-- Card 1 -->
         <div onclick="applyPowerCard('immunity', true)" class="bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 p-3 rounded-2xl border-2 border-blue-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
           <div class="flex items-center gap-2.5">
             <span class="text-3xl group-hover:scale-110 transition-transform">🛡️</span>
@@ -938,7 +922,6 @@
           <span class="text-[11px] bg-blue-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
         </div>
 
-        <!-- Card 2 -->
         <div onclick="applyPowerCard('split', true)" class="bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 p-3 rounded-2xl border-2 border-purple-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
           <div class="flex items-center gap-2.5">
             <span class="text-3xl group-hover:scale-110 transition-transform">🔀</span>
@@ -950,7 +933,6 @@
           <span class="text-[11px] bg-purple-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
         </div>
 
-        <!-- Card 3 -->
         <div onclick="applyPowerCard('double', true)" class="bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 p-3 rounded-2xl border-2 border-orange-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
           <div class="flex items-center gap-2.5">
             <span class="text-3xl group-hover:scale-110 transition-transform">⚡</span>
@@ -962,7 +944,6 @@
           <span class="text-[11px] bg-orange-600 text-white font-bold px-2 py-1 rounded-xl">تفعيل</span>
         </div>
 
-        <!-- Card 4 -->
         <div onclick="applyPowerCard('pardon', true)" class="bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 p-3 rounded-2xl border-2 border-emerald-300 cursor-pointer flex items-center justify-between transition-all group active:scale-95">
           <div class="flex items-center gap-2.5">
             <span class="text-3xl group-hover:scale-110 transition-transform">🎁</span>
@@ -989,11 +970,10 @@
     // --- SERVICE WORKER REGISTRATION (PWA) ---
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW registration error', e));
+        navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW error', e));
       });
     }
 
-    // Deferred Prompt for Native PWA Install on Samsung / Android
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -1014,13 +994,91 @@
       }
     }
 
+    // --- AUTHENTICATION & CREDENTIALS ---
+    const VALID_ACCOUNTS = {
+      "sarah": { name: "سارة", role: "wife", avatar: "🧕", pass: "12345" },
+      "ashraf": { name: "أشرف", role: "husband", avatar: "🧔‍♂️", pass: "HNV666" }
+    };
+
+    let currentUser = null; // 'Sarah' | 'Ashraf'
+
+    function checkAuthSession() {
+      const savedAuth = localStorage.getItem('chaos_court_auth');
+      if (savedAuth && VALID_ACCOUNTS[savedAuth.toLowerCase()]) {
+        currentUser = savedAuth;
+        showAppScreen();
+      } else {
+        showLoginScreen();
+      }
+    }
+
+    function fillLoginPreset(username, password) {
+      document.getElementById('login-username').value = username;
+      document.getElementById('login-password').value = password;
+      triggerHapticFeedback([30]);
+    }
+
+    function toggleLoginPassword() {
+      const input = document.getElementById('login-password');
+      const icon = document.getElementById('login-eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+      }
+    }
+
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      const u = document.getElementById('login-username').value.trim().toLowerCase();
+      const p = document.getElementById('login-password').value.trim();
+
+      if (VALID_ACCOUNTS[u] && VALID_ACCOUNTS[u].pass === p) {
+        currentUser = VALID_ACCOUNTS[u].name;
+        localStorage.setItem('chaos_court_auth', u);
+        gameState.myRole = VALID_ACCOUNTS[u].role;
+        saveStateToLocalStorage();
+        triggerHapticFeedback([50, 50, 80]);
+        playSound('success');
+        showToast(`مرحباً بك يا ${VALID_ACCOUNTS[u].name} في المحكمة! ⚖️`, "success");
+        showAppScreen();
+      } else {
+        triggerHapticFeedback([100, 100]);
+        showToast("❌ اسم المستخدم أو كلمة المرور غير صحيحة!", "error");
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("هل تريد تسجيل الخروج من المحكمة؟")) {
+        localStorage.removeItem('chaos_court_auth');
+        currentUser = null;
+        triggerHapticFeedback([30]);
+        showLoginScreen();
+        showToast("تم تسجيل الخروج", "info");
+      }
+    }
+
+    function showLoginScreen() {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('app-screen').classList.add('hidden');
+    }
+
+    function showAppScreen() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+      updateUI();
+      initRealtimeSync();
+    }
+
     // --- DEFAULT CONFIGURATION & STATE ---
     const DEFAULT_API_KEY = atob("QVEuQWI4Uk42SlJhbGJueTRJQU9RejJjUDhHWG1jUXBsR1doOGxjZl91SDNjdFBHdERLRVE=");
     const DEFAULT_ROOM = "ashraf-sarah";
     
     let gameState = {
       roomId: DEFAULT_ROOM,
-      myRole: "husband", // 'husband' (Ashraf) | 'wife' (Sarah)
+      myRole: "husband", // 'husband' | 'wife'
       apiKey: DEFAULT_API_KEY,
       soundEnabled: true,
       players: {
@@ -1034,11 +1092,9 @@
       history: []
     };
 
-    // Realtime Client Instance (Public WSS MQTT Broker)
     let mqttClient = null;
     const clientId = 'court_' + Math.random().toString(16).substring(2, 8);
 
-    // Punishment wheel items
     const punishments = [
       { text: "غسيل جميع المواعين 🍽️", color: "#f87171" },
       { text: "إعداد قهوة ملكية للطرف الآخر ☕", color: "#fbbf24" },
@@ -1056,20 +1112,19 @@
     // --- INITIALIZATION ---
     window.addEventListener('DOMContentLoaded', () => {
       loadStateFromLocalStorage();
-      updateUI();
+      checkAuthSession();
       drawWheel();
-      document.getElementById('api-key-input').value = getApiKey();
-      document.getElementById('setting-room-input').value = gameState.roomId;
-      initRealtimeSync();
     });
 
-    // --- REALTIME SYNC ENGINE (MQTT over WebSocket) ---
+    // --- REALTIME SYNC ENGINE ---
     function initRealtimeSync() {
-      const topic = `chaos_court_v2/${gameState.roomId}`;
+      const topic = `chaos_court_v3/${gameState.roomId}`;
       const statusDot = document.getElementById('sync-status-dot');
       const statusText = document.getElementById('sync-status-text');
 
       try {
+        if (mqttClient) mqttClient.end(true);
+
         mqttClient = mqtt.connect('wss://test.mosquitto.org:8081', {
           clientId: clientId,
           clean: true,
@@ -1078,8 +1133,8 @@
         });
 
         mqttClient.on('connect', () => {
-          statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-green inline-block";
-          statusText.textContent = "أونلاين متزامن 🟢";
+          if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse-green inline-block";
+          if (statusText) statusText.textContent = "أونلاين متزامن 🟢";
           mqttClient.subscribe(topic, (err) => {
             if (!err) {
               broadcastAction('presence', { user: gameState.players[gameState.myRole].name });
@@ -1098,13 +1153,13 @@
         });
 
         mqttClient.on('error', () => {
-          statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 inline-block";
-          statusText.textContent = "جارٍ الاتصال... 🟡";
+          if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 inline-block";
+          if (statusText) statusText.textContent = "جارٍ الاتصال... 🟡";
         });
 
         mqttClient.on('offline', () => {
-          statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-400 inline-block";
-          statusText.textContent = "غير متصل ⚪";
+          if (statusDot) statusDot.className = "w-2.5 h-2.5 rounded-full bg-slate-400 inline-block";
+          if (statusText) statusText.textContent = "غير متصل ⚪";
         });
 
       } catch (err) {
@@ -1114,7 +1169,7 @@
 
     function broadcastAction(actionType, payload = {}) {
       if (!mqttClient || !mqttClient.connected) return;
-      const topic = `chaos_court_v2/${gameState.roomId}`;
+      const topic = `chaos_court_v3/${gameState.roomId}`;
       const packet = {
         sender: clientId,
         senderRole: gameState.myRole,
@@ -1130,6 +1185,7 @@
 
       switch (data.action) {
         case 'verdict':
+        case 'direct_violation':
           gameState.lastVerdict = data.payload.verdict;
           gameState.players.husband.score = data.payload.husbandScore;
           gameState.players.wife.score = data.payload.wifeScore;
@@ -1139,7 +1195,7 @@
           saveStateToLocalStorage();
           updateUI();
           displayVerdict(gameState.lastVerdict, false);
-          showToast(`⚡ حكم جديد صدر من ${gameState.players[data.senderRole].name}!`, "info");
+          showToast(`⚡ قضية ومخالفة جديدة سُجلت من ${gameState.players[data.senderRole].name}!`, "info");
           break;
 
         case 'powercard':
@@ -1178,7 +1234,7 @@
           break;
 
         case 'presence':
-          showToast(`👋 ${data.payload.user} متصل الآن بالغرفة!`, "info");
+          showToast(`👋 ${data.payload.user} متصل الآن بالجلسة!`, "info");
           break;
       }
     }
@@ -1193,7 +1249,7 @@
 
     // --- STORAGE HELPERS ---
     function loadStateFromLocalStorage() {
-      const saved = localStorage.getItem('chaos_court_state_v2');
+      const saved = localStorage.getItem('chaos_court_state_v3');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -1202,36 +1258,18 @@
           console.error("Error parsing saved state:", e);
         }
       }
-      if (!gameState.players.husband.name || gameState.players.husband.name.includes("أنت")) {
-        gameState.players.husband.name = "أشرف";
-      }
-      if (!gameState.players.wife.name || gameState.players.wife.name.includes("زوجتك")) {
-        gameState.players.wife.name = "سارة";
-      }
+      gameState.players.husband.name = "أشرف";
+      gameState.players.wife.name = "سارة";
       if (!gameState.roomId) gameState.roomId = DEFAULT_ROOM;
       if (!gameState.apiKey || gameState.apiKey.trim() === '') gameState.apiKey = DEFAULT_API_KEY;
     }
 
     function saveStateToLocalStorage() {
-      localStorage.setItem('chaos_court_state_v2', JSON.stringify(gameState));
+      localStorage.setItem('chaos_court_state_v3', JSON.stringify(gameState));
     }
 
     function getApiKey() {
       return (gameState.apiKey && gameState.apiKey.trim() !== '') ? gameState.apiKey.trim() : DEFAULT_API_KEY;
-    }
-
-    // --- USER IDENTITY SWITCHER ---
-    function setUserProfile(role) {
-      gameState.myRole = role;
-      saveStateToLocalStorage();
-      updateUI();
-      triggerHapticFeedback([50]);
-      showToast(`تم تعيين هويتك: ${gameState.players[role].name} ${gameState.players[role].avatar}`, "success");
-    }
-
-    function toggleCurrentActiveUser() {
-      const nextRole = gameState.myRole === 'husband' ? 'wife' : 'husband';
-      setUserProfile(nextRole);
     }
 
     // --- TAB SWITCHING ---
@@ -1270,16 +1308,8 @@
       const currentObj = gameState.players[gameState.myRole];
       document.getElementById('header-current-user-name').textContent = currentObj.name;
       document.getElementById('header-current-user-avatar').textContent = currentObj.avatar;
-
-      const bH = document.getElementById('btn-user-husband');
-      const bW = document.getElementById('btn-user-wife');
-      if (gameState.myRole === 'husband') {
-        bH.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-blue-500 text-white border-blue-600 shadow-sm active:scale-95";
-        bW.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-pink-300 active:scale-95";
-      } else {
-        bW.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-pink-500 text-white border-pink-600 shadow-sm active:scale-95";
-        bH.className = "py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border-2 transition-all bg-white text-slate-700 border-slate-200 hover:border-blue-300 active:scale-95";
-      }
+      const statusEl = document.getElementById('settings-user-status');
+      if (statusEl) statusEl.textContent = `المستخدم: ${currentObj.name} (${currentObj.avatar})`;
 
       document.getElementById('score-husband').textContent = gameState.players.husband.score;
       document.getElementById('score-wife').textContent = gameState.players.wife.score;
@@ -1291,9 +1321,6 @@
 
       document.getElementById('btn-select-husband').querySelector('span').textContent = `🧔‍♂️ ${gameState.players.husband.name}`;
       document.getElementById('btn-select-wife').querySelector('span').textContent = `🧕 ${gameState.players.wife.name}`;
-
-      document.getElementById('setting-husband-name').value = gameState.players.husband.name;
-      document.getElementById('setting-wife-name').value = gameState.players.wife.name;
 
       updateRankBadge('husband', gameState.players.husband.score);
       updateRankBadge('wife', gameState.players.wife.score);
@@ -1359,38 +1386,40 @@
       }
     }
 
-    function setCaseTone(tone) {
-      gameState.caseTone = tone;
-      const bChaos = document.getElementById('btn-tone-chaos');
-      const bAuto = document.getElementById('btn-tone-auto');
-      const bTidy = document.getElementById('btn-tone-tidy');
-
-      bChaos.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
-      bAuto.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
-      bTidy.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-white text-slate-600 border-slate-200 active:scale-95";
-
-      if (tone === 'chaos') {
-        bChaos.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-red-600 text-white border-red-700 shadow-sm active:scale-95";
-      } else if (tone === 'tidy') {
-        bTidy.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-emerald-600 text-white border-emerald-700 shadow-sm active:scale-95";
-      } else {
-        bAuto.className = "flex-1 py-2 px-2 rounded-xl text-xs font-bold border-2 transition-all flex items-center justify-center gap-1 bg-teal-700 text-white border-teal-800 shadow-sm active:scale-95";
-      }
-      playSound('click');
-      triggerHapticFeedback([20]);
-    }
-
-    // --- IMAGE HANDLING ---
+    // --- COMPRESSED IMAGE HANDLING ---
     function handleImageSelection(event) {
       const file = event.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        gameState.currentImageBase64 = e.target.result;
-        displayImagePreview(e.target.result);
-        triggerHapticFeedback([40]);
-        showToast("📸 تم رفع الدليل بنجاح!", "success");
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 480;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.65);
+
+          gameState.currentImageBase64 = compressedDataUrl;
+          displayImagePreview(compressedDataUrl);
+          triggerHapticFeedback([40]);
+          showToast("📸 تم رفع وتجهيز الصورة بنجاح!", "success");
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -1411,7 +1440,6 @@
       triggerHapticFeedback([20]);
     }
 
-    // Quick Samples Loader
     function loadSampleImage(type) {
       const canvas = document.createElement('canvas');
       canvas.width = 400;
@@ -1441,7 +1469,7 @@
         ctx.fillText("☕", 180, 130);
         ctx.fillText("🥣", 120, 210);
         ctx.fillText("🍴", 240, 200);
-      } else { // clean
+      } else {
         ctx.fillStyle = "#f0fdf4";
         ctx.fillRect(0, 0, 400, 300);
         ctx.fillStyle = "#bbf7d0";
@@ -1453,14 +1481,38 @@
         ctx.fillText("🪴", 280, 220);
       }
 
-      const sampleDataUrl = canvas.toDataURL('image/jpeg');
+      const sampleDataUrl = canvas.toDataURL('image/jpeg', 0.7);
       gameState.currentImageBase64 = sampleDataUrl;
       displayImagePreview(sampleDataUrl);
       triggerHapticFeedback([30]);
       showToast("✨ تم تحميل نموذج التجربة!", "info");
     }
 
-    // --- GEMINI VISION API CALL ---
+    // --- FEATURE 1: DIRECT VIOLATION SUBMISSION (WITHOUT AI) ---
+    function submitDirectViolation(pointsPenalty = 5) {
+      const accused = gameState.players[gameState.currentAccused];
+      const submitter = gameState.players[gameState.myRole];
+      const userNote = document.getElementById('manual-violation-note').value.trim();
+
+      const noteText = userNote || "مخالفة كركبة مباشرة رصدها الشريك بالعين المجردة 📸";
+      
+      const directVerdict = {
+        isDirect: true,
+        items_breakdown: [
+          { name: noteText, type: "negative", points: -pointsPenalty }
+        ],
+        net_points: -pointsPenalty,
+        verdict_comment: `تم تسجيل مخالفة مباشرة من قِبل ${submitter.name} ضد ${accused.name} مع خصم ${pointsPenalty} نقاط فوراً بدون تحليل الذكاء الاصطناعي!`
+      };
+
+      document.getElementById('manual-violation-note').value = '';
+      playSound('gavel');
+      triggerHapticFeedback([100, 50, 100]);
+      displayVerdict(directVerdict, true);
+      showToast(`⚡ تم خصم ${pointsPenalty} نقاط من ${accused.name} مباشرة!`, "success");
+    }
+
+    // --- FEATURE 2: GEMINI AI VISION ANALYSIS ---
     async function runAiJudgeAnalysis() {
       const apiKey = getApiKey();
       const accused = gameState.players[gameState.currentAccused];
@@ -1550,7 +1602,7 @@
         displayVerdict(aiResult, true);
 
       } catch (err) {
-        console.warn("API Error, utilizing dynamic intelligent offline judge fallback:", err);
+        console.warn("API Error, utilizing dynamic intelligent fallback:", err);
         clearInterval(phraseInterval);
         const fallbackResult = generateIntelligentMockVerdict(accused.name, gameState.caseTone);
         displayVerdict(fallbackResult, true);
@@ -1567,28 +1619,24 @@
         return {
           items_breakdown: [
             { name: "ترتيب استثنائي وقمة الالتزام", type: "positive", points: 15 },
-            { name: "لمعان السيراميك يعكس النجوم", type: "positive", points: 10 },
-            { name: "رائحة النظافة تفوح في الأرجاء", type: "positive", points: 5 }
+            { name: "لمعان السيراميك يعكس النجوم", type: "positive", points: 10 }
           ],
-          net_points: 30,
-          verdict_comment: `تقرر المحكمة منح "${accusedName}" وسام النظافة الملكي من الدرجة الأولى، مع إلزام الطرف الآخر بتقديم عصير فاخر ومساج فوري تقديراً لهذا الإنجاز!`
+          net_points: 25,
+          verdict_comment: `تقرر المحكمة منح "${accusedName}" وسام النظافة الملكي تقديراً لهذا الترتيب!`
         };
       } else {
-        const chaosItems = [
-          { name: "جورب انفرادي يستغيث على السجادة", type: "negative", points: -12 },
-          { name: "كوب مهجور منذ أسبوع", type: "negative", points: -8 },
-          { name: "ريموت التلفزيون عالق بين الشقوق", type: "negative", points: -5 },
-          { name: "فوضى عارمة لا تليق بالمنزل", type: "negative", points: -4 }
-        ];
         return {
-          items_breakdown: chaosItems,
-          net_points: -29,
-          verdict_comment: `بعد التفتيش الدقيق، ثبتت إدانة "${accusedName}" بارتكاب جنحة الكركبة العمدية! وتأمر المحكمة بتنفيذ عقوبة فورية عبر عجلة العقوبات!`
+          items_breakdown: [
+            { name: "جورب انفرادي يستغيث على السجادة", type: "negative", points: -10 },
+            { name: "كوب مهجور منذ فترة", type: "negative", points: -5 }
+          ],
+          net_points: -15,
+          verdict_comment: `بعد التفتيش الدقيق، ثبتت إدانة "${accusedName}" بارتكاب جنحة الكركبة العمدية!`
         };
       }
     }
 
-    // --- DISPLAY VERDICT & BROADCAST ---
+    // --- DISPLAY VERDICT & BROADCAST PHOTO ---
     function displayVerdict(verdict, shouldBroadcast = true) {
       gameState.lastVerdict = {
         ...verdict,
@@ -1606,7 +1654,7 @@
         if (gameState.history.length > 50) gameState.history.pop();
         saveStateToLocalStorage();
 
-        broadcastAction('verdict', {
+        broadcastAction(verdict.isDirect ? 'direct_violation' : 'verdict', {
           verdict: gameState.lastVerdict,
           husbandScore: gameState.players.husband.score,
           wifeScore: gameState.players.wife.score,
@@ -1623,6 +1671,23 @@
       document.getElementById('verdict-avatar').textContent = accused.avatar;
       document.getElementById('verdict-accused-name').textContent = accused.name;
       
+      const tagTitle = document.getElementById('verdict-tag-title');
+      if (tagTitle) {
+        tagTitle.textContent = verdict.isDirect ? "⚡ مخالفة مباشرة سريعة" : "📜 حكم قضائي بالذكاء الاصطناعي";
+      }
+
+      // Display Attached Photo in Verdict (So Competitor sees it!)
+      const photoBox = document.getElementById('verdict-photo-container');
+      const photoImg = document.getElementById('verdict-attached-image');
+      if (gameState.lastVerdict.image) {
+        photoImg.src = gameState.lastVerdict.image;
+        photoBox.classList.remove('hidden');
+        photoBox.classList.add('flex');
+      } else {
+        photoBox.classList.add('hidden');
+        photoBox.classList.remove('flex');
+      }
+
       const netPointsEl = document.getElementById('verdict-net-points');
       if (verdict.net_points >= 0) {
         netPointsEl.className = "text-2xl font-black font-tajawal text-emerald-600 flex items-center gap-1 justify-end";
@@ -1657,6 +1722,18 @@
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+    // --- PHOTO LIGHTBOX ---
+    function openPhotoLightbox(src) {
+      if (!src) return;
+      document.getElementById('lightbox-image').src = src;
+      document.getElementById('photo-lightbox-modal').classList.remove('hidden');
+      triggerHapticFeedback([30]);
+    }
+
+    function closePhotoLightbox() {
+      document.getElementById('photo-lightbox-modal').classList.add('hidden');
+    }
+
     // --- APPEAL (استئناف الحكم) ---
     function openAppealModal() {
       if (!gameState.lastVerdict) {
@@ -1683,24 +1760,24 @@
       const accused = gameState.players[gameState.lastVerdict.accusedKey];
       const btn = document.getElementById('btn-submit-appeal');
       btn.disabled = true;
-      btn.innerHTML = `<span>⏳ القاضي يراجع الاستئناف...</span>`;
+      btn.innerHTML = `<span>⏳ مراجعة الاستئناف...</span>`;
       triggerHapticFeedback([40]);
 
       try {
         const appealPrompt = `
-أنت نفس القاضي الكوميدي الساخر في محكمة الفوضى المنزلية.
-المتهم "${accused.name}" يقدم استئنافاً وعذراً رسمياً على حكمه السابق (صافي نقاط الحكم الأصلي: ${gameState.lastVerdict.net_points}).
-عذر المتهم المكتوب هو: "${appealText}".
+أنت قاضٍ كوميدي ساخر في محكمة الفوضى المنزلية.
+المتهم "${accused.name}" يقدم استئنافاً وعذراً رسمياً على حكمه السابق (صافي نقاط الحكم: ${gameState.lastVerdict.net_points}).
+عذر المتهم: "${appealText}".
 
 قيّم العذر:
-- إذا كان العذر مقنعاً جداً أو فكاهياً وذكياً (accepted): خفّض العقوبة إلى النصف (أو امنحه +10 نقاط إضافية إذا كان حكماً إيجابياً).
-- إذا كان العذر تافهاً أو ضعيفاً أو مضحكاً بوقاحة (rejected): ضاعف العقوبة بالسالب فوراً!
+- إذا كان مقنعاً أو فكاهياً وذكياً (accepted): خفّض العقوبة إلى النصف.
+- إذا كان تافهاً أو ضعيفاً (rejected): ضاعف العقوبة بالسالب!
 
 أجب بصيغة JSON فقط:
 {
   "status": "accepted" أو "rejected",
   "adjusted_points": رقم صافي النقاط الجديد بعد التعديل,
-  "judge_reaction": "تعليق القاضي الساخر على هذا العذر واذكر اسم ${accused.name}"
+  "judge_reaction": "تعليق القاضي الساخر واذكر اسم ${accused.name}"
 }
 `;
 
@@ -1725,8 +1802,8 @@
             status: isLame ? "rejected" : "accepted",
             adjusted_points: isLame ? gameState.lastVerdict.net_points * 2 : Math.round(gameState.lastVerdict.net_points / 2),
             judge_reaction: isLame 
-              ? `عذر أقبح من ذنب يا ${accused.name}! تضاعفت العقوبة بقرار قضائي غير قابل للطعن!` 
-              : `نظراً لبلاغة العذر وخفة دم ${accused.name}، تقرر تخفيف العقوبة إلى النصف!`
+              ? `عذر واهٍ يا ${accused.name}! تضاعفت العقوبة بقرار قضائي!` 
+              : `نظراً لخفة دم ${accused.name}، تقرر تخفيف العقوبة إلى النصف!`
           };
         }
 
@@ -1999,7 +2076,7 @@
       const container = document.getElementById('qrcode-container');
       container.innerHTML = '';
       
-      const mobileUrl = window.location.href.includes('http') ? window.location.href : "http://192.168.1.214:8080";
+      const mobileUrl = "https://spardexlab-maker.github.io/chaos-court/";
       if (typeof QRCode !== 'undefined') {
         new QRCode(container, {
           text: mobileUrl,
@@ -2019,32 +2096,12 @@
       document.getElementById('install-app-modal').classList.add('hidden');
     }
 
-    function saveRoomSettings() {
-      const newRoom = document.getElementById('setting-room-input').value.trim().toLowerCase();
-      if (!newRoom) return;
-      gameState.roomId = newRoom;
-      saveStateToLocalStorage();
-      updateUI();
-      if (mqttClient) {
-        mqttClient.end(true, () => {
-          initRealtimeSync();
-        });
-      } else {
-        initRealtimeSync();
-      }
-      showToast(`🔑 تم الانضمام للغرفة (${newRoom}) بنجاح!`, "success");
-    }
-
     function reconnectRealtime() {
-      if (mqttClient) {
-        mqttClient.end(true, () => initRealtimeSync());
-      } else {
-        initRealtimeSync();
-      }
+      initRealtimeSync();
       showToast("🔄 جارٍ إعادة الاتصال بالمزامنة الحية...", "info");
     }
 
-    // --- HISTORY LOG TAB ---
+    // --- HISTORY LOG TAB (WITH THUMBNAILS & LIGHTBOX) ---
     function renderHistoryList() {
       const listEl = document.getElementById('history-list');
       const emptyEl = document.getElementById('history-empty-state');
@@ -2061,24 +2118,27 @@
         const isPos = item.net_points >= 0;
 
         const row = document.createElement('div');
-        row.className = "bg-[#fdfbf7] p-3.5 rounded-2xl shadow-card border border-teal-100/80 flex items-center justify-between gap-3";
+        row.className = "bg-[#fdfbf7] p-3 rounded-2xl shadow-card border border-teal-100/80 flex items-center justify-between gap-2.5";
+        
+        const photoThumb = item.image 
+          ? `<img src="${item.image}" alt="دليل" onclick="openPhotoLightbox('${item.image}')" class="w-11 h-11 rounded-xl object-cover border border-slate-300 cursor-pointer shadow-sm flex-shrink-0 hover:opacity-80 transition-opacity" title="انقر لتكبير الصورة" />`
+          : `<div class="text-xl w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 flex-shrink-0">${accused.avatar}</div>`;
+
         row.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="text-2xl w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200">
-              ${accused.avatar}
-            </div>
-            <div>
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            ${photoThumb}
+            <div class="overflow-hidden">
               <div class="flex items-center gap-1.5">
-                <h4 class="font-extrabold text-xs text-slate-800">${accused.name}</h4>
-                <span class="text-[10px] text-slate-400 font-mono">${item.timestamp || ''}</span>
+                <h4 class="font-extrabold text-xs text-slate-800 truncate">${accused.name}</h4>
+                <span class="text-[9px] text-slate-400 font-mono flex-shrink-0">${item.timestamp || ''}</span>
               </div>
-              <p class="text-[11px] text-slate-600 line-clamp-1 max-w-[180px] sm:max-w-xs font-medium">
+              <p class="text-[10px] text-slate-600 truncate max-w-[170px] sm:max-w-xs font-medium">
                 ${item.verdict_comment}
               </p>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 flex-shrink-0">
             <span class="text-xs font-black font-tajawal px-2 py-1 rounded-lg ${isPos ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
               ${isPos ? '+' : ''}${item.net_points}
             </span>
@@ -2119,7 +2179,6 @@
       document.getElementById('stats-name-husband').textContent = gameState.players.husband.name;
       document.getElementById('stats-name-wife').textContent = gameState.players.wife.name;
 
-      const maxScore = Math.max(Math.abs(hScore), Math.abs(wScore), 50);
       const hPercent = Math.min(Math.max(((hScore + 50) / 100) * 100, 10), 90);
       const wPercent = Math.min(Math.max(((wScore + 50) / 100) * 100, 10), 90);
 
@@ -2145,44 +2204,6 @@
       }
     }
 
-    // --- SETTINGS ACTIONS ---
-    function saveApiKeySettings() {
-      const val = document.getElementById('api-key-input').value.trim();
-      gameState.apiKey = val || DEFAULT_API_KEY;
-      saveStateToLocalStorage();
-      showToast("💾 تم حفظ مفتاح API بنجاح!", "success");
-    }
-
-    function resetDefaultApiKey() {
-      gameState.apiKey = DEFAULT_API_KEY;
-      document.getElementById('api-key-input').value = DEFAULT_API_KEY;
-      saveStateToLocalStorage();
-      showToast("🔄 تم استعادة المفتاح الافتراضي!", "info");
-    }
-
-    function toggleApiKeyVisibility() {
-      const input = document.getElementById('api-key-input');
-      const icon = document.getElementById('eye-icon');
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'fa-solid fa-eye-slash';
-      } else {
-        input.type = 'password';
-        icon.className = 'fa-solid fa-eye';
-      }
-    }
-
-    function savePlayerSettings() {
-      const hName = document.getElementById('setting-husband-name').value.trim();
-      const wName = document.getElementById('setting-wife-name').value.trim();
-      if (hName) gameState.players.husband.name = hName;
-      if (wName) gameState.players.wife.name = wName;
-      saveStateToLocalStorage();
-      updateUI();
-      broadcastCurrentState();
-      showToast("✅ تم تحديث ونشر الأسماء للطرف الآخر!", "success");
-    }
-
     function toggleSoundSetting(checked) {
       gameState.soundEnabled = checked;
       saveStateToLocalStorage();
@@ -2204,10 +2225,10 @@
       gameState.history = [
         {
           accusedKey: "husband",
-          net_points: -15,
+          net_points: -5,
           timestamp: "10:30 ص",
           date: "اليوم",
-          verdict_comment: "تم رصد جورب لأشرف في الصالة وحذاء غير موضوع في الخزانة!"
+          verdict_comment: "مخالفة مباشرة: كوب قهوة متروك في الصالة بدون غسيل!"
         },
         {
           accusedKey: "wife",
@@ -2271,7 +2292,6 @@
       }
     }
 
-    // --- HAPTIC VIBRATION (FOR SAMSUNG & IPHONE) ---
     function triggerHapticFeedback(pattern = [30]) {
       if (!gameState.soundEnabled) return;
       if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
@@ -2281,7 +2301,6 @@
       }
     }
 
-    // --- CELEBRATION EFFECTS ---
     function celebrateConfetti() {
       if (typeof confetti === 'function') {
         confetti({
@@ -2292,7 +2311,6 @@
       }
     }
 
-    // --- TOAST NOTIFIER ---
     function showToast(message, type = 'info') {
       const toast = document.getElementById('toast');
       const msgEl = document.getElementById('toast-message');
