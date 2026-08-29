@@ -1652,18 +1652,19 @@
 }
 `;
 
-          const fetchPromise = fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{
-                parts: [
-                  { text: systemPrompt },
-                  { inline_data: { mime_type: "image/jpeg", data: base64Data } }
-                ]
-              }]
-            })
-          }).then(async res => {
+          const callGeminiModel = async (modelName) => {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{
+                  parts: [
+                    { text: systemPrompt },
+                    { inline_data: { mime_type: "image/jpeg", data: base64Data } }
+                  ]
+                }]
+              })
+            });
             if (!res.ok) throw new Error(`API status ${res.status}`);
             const data = await res.json();
             const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -1672,7 +1673,11 @@
               return JSON.parse(cleanJsonStr);
             }
             return null;
-          });
+          };
+
+          const fetchPromise = callGeminiModel('gemini-3.7-flash')
+            .catch(() => callGeminiModel('gemini-flash-latest'))
+            .catch(() => null);
 
           const results = await Promise.allSettled([fetchPromise, delayPromise]);
           if (results[0].status === 'fulfilled' && results[0].value) {
