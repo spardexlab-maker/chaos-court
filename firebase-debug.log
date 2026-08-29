@@ -1,0 +1,34 @@
+[debug] [2026-08-29T10:49:31.670Z] ----------------------------------------------------------------------
+[debug] [2026-08-29T10:49:31.672Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\smrt\AppData\Local\npm-cache\_npx\7750544ccf494d8b\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting --project residential-d4bbd
+[debug] [2026-08-29T10:49:31.672Z] CLI Version:   15.28.2
+[debug] [2026-08-29T10:49:31.672Z] Platform:      win32
+[debug] [2026-08-29T10:49:31.672Z] Node Version:  v24.18.0
+[debug] [2026-08-29T10:49:31.672Z] Detected Agent: antigravity
+[debug] [2026-08-29T10:49:31.672Z] Time:          Sat Aug 29 2026 13:49:31 GMT+0300 (Arabian Standard Time)
+[debug] [2026-08-29T10:49:31.672Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-29T10:49:31.680Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-08-29T10:49:32.533Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-29T10:49:32.534Z] > authorizing via signed-in user (ashrafezza6645@gmail.com)
+[debug] [2026-08-29T10:49:32.534Z] [iam] checking project residential-d4bbd for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-29T10:49:32.534Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:32.534Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:32.534Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/residential-d4bbd:testIamPermissions [none]
+[debug] [2026-08-29T10:49:32.534Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/residential-d4bbd:testIamPermissions  x-goog-user-project=residential-d4bbd
+[debug] [2026-08-29T10:49:32.535Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/residential-d4bbd:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-29T10:49:33.034Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-08-29T10:49:33.034Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-08-29T10:49:33.150Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/residential-d4bbd:testIamPermissions 200
+[debug] [2026-08-29T10:49:33.150Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/residential-d4bbd:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-29T10:49:33.151Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:33.151Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:33.151Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/residential-d4bbd [none]
+[debug] [2026-08-29T10:49:33.627Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/residential-d4bbd 200
+[debug] [2026-08-29T10:49:33.627Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/residential-d4bbd {"projectId":"residential-d4bbd","projectNumber":"715711753872","displayName":"Residential ","name":"projects/residential-d4bbd","resources":{"hostingSite":"residential-d4bbd"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_8f84afb3-eb4a-4372-9f56-256e18d83bef"}
+[info] 
+[info] === Deploying to 'residential-d4bbd'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-08-29T10:49:33.629Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:33.629Z] Checked if tokens are valid: true, expires at: 1788004066436
+[debug] [2026-08-29T10:49:33.629Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/residential-d4bbd/sites/residential-d4bbd [none]
