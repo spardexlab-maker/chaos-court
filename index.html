@@ -1705,66 +1705,53 @@
     }
 
     function generateIntelligentMockVerdict(accusedName, userNote = "") {
-      const negativePool = [
-        { name: "كوب شاي/قهوة متروك بدون غسيل ☕", points: -3 },
-        { name: "جورب ضائع يستغيث في الزاوية 🧦", points: -4 },
-        { name: "أسلاك وشواحن مبعثرة كشبكة العنكبوت 🔌", points: -5 },
-        { name: "أطباق متراكمة في حوض المطبخ 🍽️", points: -7 },
-        { name: "ملابس مكدسة على الكرسي 👗", points: -6 },
-        { name: "أحذية متناثرة عند المدخل 👟", points: -4 },
-        { name: "مناديل مستعملة مهجورة على الطاولة 🧻", points: -3 },
-        { name: "باب الدولاب مفتوح بإهمال 🚪", points: -2 },
-        { name: "وسائد الكنب مقلوبة ومطعوجة 🛋️", points: -3 },
-        { name: "أغراض شخصية مبعثرة بلا مأوى 📦", points: -4 }
-      ];
-
-      const positivePool = [
-        { name: "رائحة نظافة ولمعان في الأرجاء ✨", points: 4 },
-        { name: "ترتيب هندسي متناسق للمكان 📐", points: 5 }
-      ];
-
       let selectedItems = [];
+      let totalPoints = 0;
 
       if (userNote && userNote.trim().length > 0) {
-        const customPenalty = - (3 + Math.floor(Math.random() * 6)); // -3 to -8
-        selectedItems.push({
-          name: `مخالفة موثقة: ${userNote}`,
-          type: "negative",
-          points: customPenalty
-        });
-      }
+        // Evaluate the specific written text dynamically (e.g. coffee on clothes: severe penalty -8 to -18 points)
+        const note = userNote.trim();
+        let penalty = -5;
 
-      // Pick 1 to 2 random secondary infractions
-      const shuffledNeg = [...negativePool].sort(() => 0.5 - Math.random());
-      const countToAdd = Math.floor(Math.random() * 2) + 1;
-      for (let i = 0; i < countToAdd; i++) {
-        if (!selectedItems.some(x => x.name === shuffledNeg[i].name)) {
-          selectedItems.push({
-            name: shuffledNeg[i].name,
-            type: "negative",
-            points: shuffledNeg[i].points
-          });
+        if (note.includes('سكب') || note.includes('قهوة') || note.includes('عصير') || note.includes('شاي') || note.includes('تخريب') || note.includes('كسر')) {
+          penalty = - (8 + Math.floor(Math.random() * 8)); // -8 to -15
+        } else if (note.includes('ملابس') || note.includes('مواعين') || note.includes('كركبة') || note.includes('فوضى')) {
+          penalty = - (5 + Math.floor(Math.random() * 6)); // -5 to -10
+        } else if (note.includes('ترتيب') || note.includes('نظافة') || note.includes('غسيل') || note.includes('تنسيق')) {
+          penalty = 8 + Math.floor(Math.random() * 10); // +8 to +17
+        } else {
+          penalty = - (3 + Math.floor(Math.random() * 5)); // -3 to -7
         }
-      }
 
-      // Small chance to give a mitigation point
-      if (Math.random() > 0.6) {
-        const pos = positivePool[Math.floor(Math.random() * positivePool.length)];
+        const isPos = penalty > 0;
         selectedItems.push({
-          name: pos.name,
-          type: "positive",
-          points: pos.points
+          name: `${isPos ? 'إنجاز وترتيب' : 'المخالفة المرصودة'}: ${note}`,
+          type: isPos ? "positive" : "negative",
+          points: penalty
         });
-      }
+        totalPoints = penalty;
 
-      // Calculate exact sum
-      const totalPoints = selectedItems.reduce((acc, cur) => acc + cur.points, 0);
+      } else {
+        // No text provided: dynamic single observation
+        const randomInfractions = [
+          { name: "فوضى ملحوظة في مسرح الواقعة ⚠️", points: - (4 + Math.floor(Math.random() * 7)) },
+          { name: "أغراض مبعثرة تحتاج ترتيباً فورياً 📦", points: - (3 + Math.floor(Math.random() * 5)) },
+          { name: "إهمال واضح في نظافة المكان 🧹", points: - (5 + Math.floor(Math.random() * 6)) },
+          { name: "لمسات ترتيب ونظافة مقبولة ✨", points: (4 + Math.floor(Math.random() * 5)) }
+        ];
+        const chosen = randomInfractions[Math.floor(Math.random() * randomInfractions.length)];
+        selectedItems.push({
+          name: chosen.name,
+          type: chosen.points > 0 ? "positive" : "negative",
+          points: chosen.points
+        });
+        totalPoints = chosen.points;
+      }
 
       const commentsPool = [
-        `بعد المعاينة الجنائية الدقيقة للأدلة، ثبت بالدليل القاطع تورط "${accusedName}" في إشاعة الفوضى بمجموع (${totalPoints}) نقطة!`,
-        `المحكمة لا تتهاون في تفاصيل البيت! رُصدت مخالفات واضحة على "${accusedName}" وخُصم (${Math.abs(totalPoints)}) نقاط فوراً.`,
-        `بناءً على الأدلة الصريحة، قضت المحكمة بإلزام "${accusedName}" بالاعتراف بالكركبة وتحمّل الخصم القضائي (${totalPoints}) نقطة!`,
-        `تحريات القاضي أثبتت وجود إهمال ملحوظ في مسرح الواقعة، وتم إنزال عقوبة الخصم (${totalPoints}) على "${accusedName}".`
+        `بعد المعاينة الدقيقة للبلاغ، قررت المحكمة خصم (${Math.abs(totalPoints)}) نقاط من رصيد "${accusedName}" بسبب هذه الواقعة!`,
+        `المحكمة تدين "${accusedName}" بخصوص هذه المخالفة الموثقة بقرار قضائي صارم (${totalPoints}) نقطة.`,
+        `بناءً على الأدلة والتحريات، ثبتت إدانة "${accusedName}" وتم إنزال عقوبة (${totalPoints}) نقطة للتأديب والترتيب!`
       ];
 
       const comment = commentsPool[Math.floor(Math.random() * commentsPool.length)];
