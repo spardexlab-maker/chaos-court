@@ -1707,20 +1707,43 @@
     function generateIntelligentMockVerdict(accusedName, userNote = "") {
       let selectedItems = [];
       let totalPoints = 0;
+      const note = userNote ? userNote.trim() : "";
 
-      if (userNote && userNote.trim().length > 0) {
-        // Evaluate the specific written text dynamically (e.g. coffee on clothes: severe penalty -8 to -18 points)
-        const note = userNote.trim();
+      const testKeywords = ['تجربة', 'تست', 'test', 'سارة', 'ساره', 'اشرف', 'أشرف', 'مرحبا', 'تجربه', 'فحص', 'سلام'];
+      const isJustNameOrTest = note.length > 0 && (
+        testKeywords.includes(note.toLowerCase()) || 
+        note === accusedName || 
+        note.length < 3
+      );
+
+      if (isJustNameOrTest) {
+        // Pure name or test word -> Innocence / 0 points
+        selectedItems.push({
+          name: `براءة فنية: لا توجد مخالفة صريحة ("${note}") 🕊️`,
+          type: "positive",
+          points: 0
+        });
+        totalPoints = 0;
+
+        return {
+          items_breakdown: selectedItems,
+          net_points: 0,
+          verdict_comment: `قضت المحكمة ببراءة "${accusedName}" تماماً، حيث تبيّن أن البلاغ مجرد اختبار أو كلمة عابرة دون أي جرم منزلي!`
+        };
+      }
+
+      if (note.length > 0) {
+        // Evaluate specific real complaints
         let penalty = -5;
 
-        if (note.includes('سكب') || note.includes('قهوة') || note.includes('عصير') || note.includes('شاي') || note.includes('تخريب') || note.includes('كسر')) {
+        if (note.includes('سكب') || note.includes('قهوة') || note.includes('عصير') || note.includes('شاي') || note.includes('تخريب') || note.includes('كسر') || note.includes('حرق')) {
           penalty = - (8 + Math.floor(Math.random() * 8)); // -8 to -15
-        } else if (note.includes('ملابس') || note.includes('مواعين') || note.includes('كركبة') || note.includes('فوضى')) {
-          penalty = - (5 + Math.floor(Math.random() * 6)); // -5 to -10
-        } else if (note.includes('ترتيب') || note.includes('نظافة') || note.includes('غسيل') || note.includes('تنسيق')) {
+        } else if (note.includes('ملابس') || note.includes('مواعين') || note.includes('كركبة') || note.includes('فوضى') || note.includes('زبالة') || note.includes('قمامة') || note.includes('باب')) {
+          penalty = - (4 + Math.floor(Math.random() * 6)); // -4 to -9
+        } else if (note.includes('ترتيب') || note.includes('نظافة') || note.includes('غسيل') || note.includes('تنسيق') || note.includes('بخور') || note.includes('عطر')) {
           penalty = 8 + Math.floor(Math.random() * 10); // +8 to +17
         } else {
-          penalty = - (3 + Math.floor(Math.random() * 5)); // -3 to -7
+          penalty = - (3 + Math.floor(Math.random() * 4)); // -3 to -6
         }
 
         const isPos = penalty > 0;
@@ -1732,11 +1755,11 @@
         totalPoints = penalty;
 
       } else {
-        // No text provided: dynamic single observation
+        // No text provided: examine visual environment
         const randomInfractions = [
-          { name: "فوضى ملحوظة في مسرح الواقعة ⚠️", points: - (4 + Math.floor(Math.random() * 7)) },
-          { name: "أغراض مبعثرة تحتاج ترتيباً فورياً 📦", points: - (3 + Math.floor(Math.random() * 5)) },
-          { name: "إهمال واضح في نظافة المكان 🧹", points: - (5 + Math.floor(Math.random() * 6)) },
+          { name: "فوضى ملحوظة في مسرح الواقعة ⚠️", points: - (4 + Math.floor(Math.random() * 5)) },
+          { name: "أغراض مبعثرة تحتاج ترتيباً فورياً 📦", points: - (3 + Math.floor(Math.random() * 4)) },
+          { name: "إهمال في نظافة وترتيب المكان 🧹", points: - (4 + Math.floor(Math.random() * 5)) },
           { name: "لمسات ترتيب ونظافة مقبولة ✨", points: (4 + Math.floor(Math.random() * 5)) }
         ];
         const chosen = randomInfractions[Math.floor(Math.random() * randomInfractions.length)];
