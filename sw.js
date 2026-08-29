@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chaos-court-v5';
+const CACHE_NAME = 'chaos-court-v7';
 const ASSETS = [
   './',
   './index.html',

@@ -1331,7 +1331,7 @@
 
     // --- STORAGE HELPERS ---
     function loadStateFromLocalStorage() {
-      const saved = localStorage.getItem('chaos_court_state_v3');
+      const saved = localStorage.getItem('chaos_court_state_v5_clean');
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
@@ -1339,6 +1339,13 @@
         } catch (e) {
           console.error("Error parsing saved state:", e);
         }
+      } else {
+        // Clean initial reset
+        gameState.players.husband.score = 0;
+        gameState.players.wife.score = 0;
+        gameState.history = [];
+        gameState.lastVerdict = null;
+        localStorage.setItem('chaos_court_state_v5_clean', JSON.stringify(gameState));
       }
       gameState.players.husband.name = "أشرف";
       gameState.players.wife.name = "سارة";
@@ -1347,7 +1354,7 @@
     }
 
     function saveStateToLocalStorage() {
-      localStorage.setItem('chaos_court_state_v3', JSON.stringify(gameState));
+      localStorage.setItem('chaos_court_state_v5_clean', JSON.stringify(gameState));
       saveToFirestore();
     }
 
