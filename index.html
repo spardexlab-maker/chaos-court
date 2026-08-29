@@ -72,6 +72,10 @@
   <!-- MQTT / WebSockets Realtime Cloud Sync -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+  <!-- Firebase App & Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --sat: env(safe-area-inset-top, 0px);
@@ -97,7 +101,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 5px;
       height: 5px;
@@ -162,7 +165,7 @@
 <body class="bg-[#e0f2f1] text-slate-800 min-h-screen flex flex-col items-center selection:bg-teal-500 selection:text-white">
 
   <!-- ==================== 1. LOGIN SCREEN ==================== -->
-  <div id="login-screen" class="w-full max-w-md min-h-[90vh] px-4 flex flex-col justify-center items-center">
+  <div id="login-screen" class="w-full max-w-md min-h-[85vh] px-4 flex flex-col justify-center items-center my-auto">
     <div class="w-full bg-[#fdfbf7] rounded-3xl p-6 sm:p-8 shadow-card border-2 border-teal-200/80 flex flex-col gap-4 text-center relative overflow-hidden">
       <div class="absolute -right-8 -top-8 text-8xl text-teal-900/5 select-none pointer-events-none">⚖️</div>
       
@@ -177,12 +180,12 @@
 
       <!-- Quick Preset Account Buttons -->
       <div class="grid grid-cols-2 gap-2 my-1">
-        <button type="button" onclick="fillLoginPreset('Sarah', '12345')" class="p-2.5 bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-pink-950">
+        <button type="button" onclick="fillLoginPreset('Sarah', '12345')" class="p-2.5 bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-pink-950 shadow-sm">
           <span class="text-lg">🧕</span>
           <span>سارة (Sarah)</span>
         </button>
 
-        <button type="button" onclick="fillLoginPreset('Ashraf', 'HNV666')" class="p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-blue-950">
+        <button type="button" onclick="fillLoginPreset('Ashraf', 'HNV666')" class="p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all text-xs font-black text-blue-950 shadow-sm">
           <span class="text-lg">🧔‍♂️</span>
           <span>أشرف (Ashraf)</span>
         </button>
@@ -193,7 +196,7 @@
         <div>
           <label class="text-xs font-black text-slate-700 block mb-1">اسم المستخدم (Username):</label>
           <div class="relative">
-            <input type="text" id="login-username" required class="w-full bg-white border border-slate-300 rounded-2xl px-3.5 py-2.5 text-xs font-bold text-slate-800 pl-9 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600" placeholder="أدخل اسم المستخدم (Sarah / Ashraf)" />
+            <input type="text" id="login-username" required class="w-full bg-white border border-slate-300 rounded-2xl px-3.5 py-2.5 text-xs font-bold text-slate-800 pl-9 focus:outline-none focus:border-teal-600 focus:ring-1 focus:ring-teal-600" placeholder="Sarah أو Ashraf" />
             <i class="fa-solid fa-user absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
           </div>
         </div>
@@ -215,7 +218,7 @@
       </form>
 
       <div class="text-[11px] text-slate-400 font-medium pt-2 border-t border-slate-100">
-        محكمة الفوضى المنزلية • جلسات علنية مشفرة ومباشرة 🔒
+        محكمة الفوضى المنزلية • مشفرة ومباشرة بين أشرف وسارة 🔒
       </div>
     </div>
   </div>
@@ -223,7 +226,7 @@
   <!-- ==================== 2. MAIN APP INTERFACE ==================== -->
   <main id="app-screen" class="hidden w-full max-w-md min-h-screen px-3 flex flex-col relative">
 
-    <!-- Top Real-time Status Bar & Profile Selector -->
+    <!-- Top Real-time Status Bar & User Info -->
     <div class="w-full bg-white/85 backdrop-blur-md rounded-2xl p-2 px-3 mb-2 border border-teal-200/80 shadow-sm flex items-center justify-between sticky top-1 z-30">
       
       <!-- Online Sync Status Indicator -->
@@ -246,21 +249,13 @@
       </button>
     </div>
 
-    <!-- Top Header -->
+    <!-- Clean Top Header (Hidden top badges as requested) -->
     <header class="w-full text-center my-1 pt-1">
       <div class="flex items-center justify-between px-1 mb-1">
-        <button onclick="openInstallAppModal()" class="text-[11px] bg-teal-700/10 hover:bg-teal-700/20 text-teal-900 px-2.5 py-1 rounded-full font-bold border border-teal-700/20 flex items-center gap-1 transition-all">
-          <i class="fa-solid fa-mobile-screen text-teal-700"></i>
-          <span>تثبيت PWA 📲</span>
-        </button>
-
-        <div class="inline-flex items-center justify-center gap-1 px-3 py-1 bg-teal-800/10 rounded-full text-teal-900 text-[11px] font-bold border border-teal-700/10">
-          <span>⚖️</span>
-          <span>محكمة شؤون المنزل المباشرة</span>
-        </div>
-
-        <button onclick="openPunishmentWheel()" class="text-[11px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 px-2.5 py-1 rounded-full font-bold border border-amber-500/20 flex items-center gap-1 transition-all">
-          <span>🎯 العجلة</span>
+        <span class="text-xs font-bold text-teal-800">جلسة علنية مباشرة 🔴</span>
+        
+        <button onclick="openPunishmentWheel()" class="text-[11px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 px-3 py-1 rounded-full font-bold border border-amber-500/20 flex items-center gap-1 transition-all">
+          <span>🎯 عجلة العقوبات</span>
         </button>
       </div>
 
@@ -466,7 +461,7 @@
         <div id="verdict-photo-container" class="hidden flex-col items-center w-full bg-slate-100 p-2 rounded-2xl border border-slate-200">
           <div class="text-[11px] font-bold text-slate-600 mb-1 w-full flex items-center justify-between">
             <span>📸 صورة الدليل الموثقة (انقر للتكبير):</span>
-            <span class="text-[10px] text-teal-700">مباشر أونلاين ⚡</span>
+            <span class="text-[10px] text-teal-700 font-bold">مباشر أونلاين ⚡</span>
           </div>
           <img id="verdict-attached-image" src="" alt="صورة الدليل" class="w-full max-h-48 object-cover rounded-xl shadow-sm cursor-pointer hover:opacity-90 transition-opacity" onclick="openPhotoLightbox(this.src)" />
         </div>
@@ -547,9 +542,13 @@
             <p class="text-[11px] text-slate-500">مع صور الأدلة المتبادلة بين أشرف وسارة</p>
           </div>
         </div>
-        <button onclick="clearHistoryConfirmation()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-2.5 py-1 rounded-xl font-bold transition-colors">
-          <i class="fa-solid fa-trash-can"></i> مسح السجل
-        </button>
+        
+        <!-- Clear History (Ashraf Only Permission) -->
+        <div id="clear-history-box">
+          <button onclick="clearHistoryConfirmation()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-2.5 py-1 rounded-xl font-bold transition-colors">
+            <i class="fa-solid fa-trash-can"></i> مسح السجل
+          </button>
+        </div>
       </div>
 
       <!-- History List Container -->
@@ -657,7 +656,7 @@
           <div class="flex items-center gap-2">
             <span class="text-xl">👤</span>
             <div>
-              <h2 class="font-extrabold text-sm text-amber-300">الحساب والغرفة الحالية</h2>
+              <h2 class="font-extrabold text-sm text-amber-300">الحساب والغرفة المشتركة</h2>
               <p class="text-[11px] text-teal-200" id="settings-user-status">المستخدم: أشرف (Ashraf)</p>
             </div>
           </div>
@@ -666,8 +665,8 @@
           </button>
         </div>
 
-        <div class="pt-2 border-t border-teal-700/50 flex justify-between items-center">
-          <span class="text-xs text-teal-100">الغرفة المشتركة: <strong class="text-amber-300 font-mono">ashraf-sarah</strong></span>
+        <div class="pt-2 border-t border-teal-700/50 flex justify-between items-center text-xs">
+          <span class="text-teal-100">Firebase: <strong class="text-amber-300 font-mono">residential-d4bbd</strong></span>
           <button onclick="broadcastCurrentState()" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-lg font-bold">
             🔄 مزامنة قسرية
           </button>
@@ -679,8 +678,8 @@
         <div class="flex items-center gap-2">
           <span class="text-xl">📱</span>
           <div>
-            <h3 class="font-extrabold text-teal-950 text-xs">تثبيت التطبيق على الهواتف</h3>
-            <p class="text-[10px] text-slate-500">يعمل بكامل الشاشة على آيفون وسامسونج</p>
+            <h3 class="font-extrabold text-teal-950 text-xs">تثبيت التطبيق على الآيفون والسامسونج</h3>
+            <p class="text-[10px] text-slate-500">ليعمل كـ Native App بكامل الشاشة</p>
           </div>
         </div>
         <button onclick="openInstallAppModal()" class="bg-teal-800 hover:bg-teal-900 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-colors">
@@ -701,22 +700,23 @@
           </label>
         </div>
 
-        <div class="pt-2 border-t border-slate-100 flex justify-between">
+        <!-- Reset Scores (Ashraf Only Permission) -->
+        <div class="pt-2 border-t border-slate-100 flex justify-between items-center">
           <button onclick="resetScoresConfirmation()" class="text-xs text-red-600 hover:text-red-800 font-bold flex items-center gap-1">
             <i class="fa-solid fa-rotate-left"></i>
-            <span>تصفير العداد للطرفين</span>
+            <span>تصفير العداد للطرفين (صلاحية أشرف فقط)</span>
           </button>
           
           <button onclick="loadDemoHistory()" class="text-xs text-teal-700 hover:text-teal-900 font-bold flex items-center gap-1">
             <i class="fa-solid fa-magic"></i>
-            <span>تحميل أمثلة</span>
+            <span>أمثلة</span>
           </button>
         </div>
       </div>
 
       <!-- About App Footer -->
       <div class="text-center py-2 text-slate-400 text-xs">
-        محكمة الفوضى المنزلية المباشرة v3.0 • لأشرف وسارة ❤️🔨
+        محكمة الفوضى المنزلية المباشرة v3.1 • لأشرف وسارة ❤️🔨
       </div>
     </div>
 
@@ -766,7 +766,7 @@
     </div>
   </div>
 
-  <!-- MODAL: NATIVE APP INSTALL GUIDE (IPHONE & SAMSUNG) -->
+  <!-- MODAL: NATIVE APP INSTALL GUIDE -->
   <div id="install-app-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-teal-400 flex flex-col gap-3 relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeInstallAppModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -828,7 +828,7 @@
     </div>
   </div>
 
-  <!-- MODAL: PUNISHMENT WHEEL (عجلة العقوبات) -->
+  <!-- MODAL: PUNISHMENT WHEEL (12 EXPANDED ITEMS) -->
   <div id="wheel-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col items-center text-center relative">
       <button onclick="closePunishmentWheel()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -837,7 +837,7 @@
 
       <div class="flex items-center gap-2 mb-1">
         <span class="text-2xl">🎯</span>
-        <h3 class="text-lg font-black text-teal-950">عجلة العقوبات المتزامنة</h3>
+        <h3 class="text-lg font-black text-teal-950">عجلة العقوبات الكبرى (12 خياراً)</h3>
       </div>
       <p class="text-xs text-slate-500 mb-3" id="wheel-target-text">
         العقوبة ستُطبّق على الطرف الخاسر حالياً!
@@ -861,7 +861,7 @@
     </div>
   </div>
 
-  <!-- MODAL: APPEAL (استئناف الحكم) -->
+  <!-- MODAL: APPEAL -->
   <div id="appeal-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-amber-300 flex flex-col gap-3 relative">
       <button onclick="closeAppealModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -894,7 +894,7 @@
     </div>
   </div>
 
-  <!-- MODAL: POWER-UP CARDS (كروت القوة) -->
+  <!-- MODAL: POWER-UP CARDS -->
   <div id="power-cards-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-[#fdfbf7] rounded-3xl p-5 max-w-sm w-full shadow-2xl border-2 border-purple-300 flex flex-col gap-3 relative">
       <button onclick="closePowerCardsModal()" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">
@@ -967,7 +967,6 @@
 
   <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    // --- SERVICE WORKER REGISTRATION (PWA) ---
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW error', e));
@@ -1000,12 +999,13 @@
       "ashraf": { name: "أشرف", role: "husband", avatar: "🧔‍♂️", pass: "HNV666" }
     };
 
-    let currentUser = null; // 'Sarah' | 'Ashraf'
+    let currentUser = null;
 
     function checkAuthSession() {
-      const savedAuth = localStorage.getItem('chaos_court_auth');
+      const savedAuth = localStorage.getItem('chaos_court_auth_user');
       if (savedAuth && VALID_ACCOUNTS[savedAuth.toLowerCase()]) {
-        currentUser = savedAuth;
+        currentUser = savedAuth.toLowerCase();
+        gameState.myRole = VALID_ACCOUNTS[currentUser].role;
         showAppScreen();
       } else {
         showLoginScreen();
@@ -1036,8 +1036,8 @@
       const p = document.getElementById('login-password').value.trim();
 
       if (VALID_ACCOUNTS[u] && VALID_ACCOUNTS[u].pass === p) {
-        currentUser = VALID_ACCOUNTS[u].name;
-        localStorage.setItem('chaos_court_auth', u);
+        currentUser = u;
+        localStorage.setItem('chaos_court_auth_user', u);
         gameState.myRole = VALID_ACCOUNTS[u].role;
         saveStateToLocalStorage();
         triggerHapticFeedback([50, 50, 80]);
@@ -1052,7 +1052,7 @@
 
     function handleLogout() {
       if (confirm("هل تريد تسجيل الخروج من المحكمة؟")) {
-        localStorage.removeItem('chaos_court_auth');
+        localStorage.removeItem('chaos_court_auth_user');
         currentUser = null;
         triggerHapticFeedback([30]);
         showLoginScreen();
@@ -1070,6 +1070,7 @@
       document.getElementById('app-screen').classList.remove('hidden');
       updateUI();
       initRealtimeSync();
+      initFirebaseFirestore();
     }
 
     // --- DEFAULT CONFIGURATION & STATE ---
@@ -1095,15 +1096,20 @@
     let mqttClient = null;
     const clientId = 'court_' + Math.random().toString(16).substring(2, 8);
 
+    // EXPANDED 12 PUNISHMENT WHEEL ITEMS
     const punishments = [
       { text: "غسيل جميع المواعين 🍽️", color: "#f87171" },
       { text: "إعداد قهوة ملكية للطرف الآخر ☕", color: "#fbbf24" },
-      { text: "كنس الصالة بالكامل 🧹", color: "#34d399" },
+      { text: "كنس ومسح الصالة بالكامل 🧹", color: "#34d399" },
       { text: "ممنوع من ريموت التلفزيون 24 ساعة 📺", color: "#60a5fa" },
       { text: "جلسة مساج أكتاف 10 دقائق 💆‍♂️", color: "#a78bfa" },
       { text: "طلب عشاء فاخر على حسابك 🍕", color: "#f472b6" },
       { text: "الاعتراف بالخطأ مع قبلة على الرأس 👑", color: "#fb923c" },
-      { text: "ترتيب وتنسيق السرير أسبوعاً 🛏️", color: "#2dd4bf" }
+      { text: "ترتيب وتنسيق السرير أسبوعاً 🛏️", color: "#2dd4bf" },
+      { text: "شراء حلوى وشوكولاتة مفضلة 🍫", color: "#e879f9" },
+      { text: "إخراج كيس القمامة 3 أيام متتالية 🗑️", color: "#94a3b8" },
+      { text: "إعداد فطور رومانسي في السرير 🍳", color: "#facc15" },
+      { text: "ترتيب دولاب الملابس المكركب 👗", color: "#38bdf8" }
     ];
 
     let isSpinning = false;
@@ -1116,7 +1122,49 @@
       drawWheel();
     });
 
-    // --- REALTIME SYNC ENGINE ---
+    // --- FIREBASE FIRESTORE SYNC ---
+    let db = null;
+    function initFirebaseFirestore() {
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp({
+            projectId: "residential-d4bbd"
+          });
+        }
+        db = firebase.firestore();
+        
+        // Listen to persistent session doc
+        db.collection("courts").doc(gameState.roomId).onSnapshot((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            if (data.players) gameState.players = data.players;
+            if (data.history) gameState.history = data.history;
+            if (data.lastVerdict) gameState.lastVerdict = data.lastVerdict;
+            saveStateToLocalStorage();
+            updateUI();
+          }
+        }, (err) => {
+          console.log("Firestore sync active with WebSocket channel fallback");
+        });
+      } catch (e) {
+        console.warn("Firestore init fallback:", e);
+      }
+    }
+
+    function saveToFirestore() {
+      if (db) {
+        try {
+          db.collection("courts").doc(gameState.roomId).set({
+            players: gameState.players,
+            history: gameState.history,
+            lastVerdict: gameState.lastVerdict || null,
+            updatedAt: Date.now()
+          }, { merge: true }).catch(() => {});
+        } catch (e) {}
+      }
+    }
+
+    // --- REALTIME SYNC ENGINE (MQTT over WebSocket) ---
     function initRealtimeSync() {
       const topic = `chaos_court_v3/${gameState.roomId}`;
       const statusDot = document.getElementById('sync-status-dot');
@@ -1195,7 +1243,7 @@
           saveStateToLocalStorage();
           updateUI();
           displayVerdict(gameState.lastVerdict, false);
-          showToast(`⚡ قضية ومخالفة جديدة سُجلت من ${gameState.players[data.senderRole].name}!`, "info");
+          showToast(`⚡ مخالفة وقضية جديدة سُجلت من ${gameState.players[data.senderRole].name}!`, "info");
           break;
 
         case 'powercard':
@@ -1230,7 +1278,15 @@
           gameState.players.wife.score = 0;
           saveStateToLocalStorage();
           updateUI();
-          showToast(`🔄 قام ${gameState.players[data.senderRole].name} بتصفير العداد!`, "info");
+          showToast(`🔄 قام أشرف بتصفير العداد لجميع الأطراف!`, "info");
+          break;
+
+        case 'clear_history':
+          gameState.history = [];
+          saveStateToLocalStorage();
+          updateUI();
+          if (document.getElementById('tab-history').classList.contains('hidden') === false) renderHistoryList();
+          showToast("🧹 قام أشرف بمسح السجل القضائي!", "info");
           break;
 
         case 'presence':
@@ -1244,6 +1300,7 @@
         players: gameState.players,
         history: gameState.history
       });
+      saveToFirestore();
       showToast("🚀 تم إرسال حالة المحكمة لجميع الهواتف المتصلة!", "success");
     }
 
@@ -1266,6 +1323,7 @@
 
     function saveStateToLocalStorage() {
       localStorage.setItem('chaos_court_state_v3', JSON.stringify(gameState));
+      saveToFirestore();
     }
 
     function getApiKey() {
@@ -1488,7 +1546,7 @@
       showToast("✨ تم تحميل نموذج التجربة!", "info");
     }
 
-    // --- FEATURE 1: DIRECT VIOLATION SUBMISSION (WITHOUT AI) ---
+    // --- DIRECT VIOLATION SUBMISSION (WITHOUT AI) ---
     function submitDirectViolation(pointsPenalty = 5) {
       const accused = gameState.players[gameState.currentAccused];
       const submitter = gameState.players[gameState.myRole];
@@ -1512,7 +1570,7 @@
       showToast(`⚡ تم خصم ${pointsPenalty} نقاط من ${accused.name} مباشرة!`, "success");
     }
 
-    // --- FEATURE 2: GEMINI AI VISION ANALYSIS ---
+    // --- GEMINI AI VISION ANALYSIS ---
     async function runAiJudgeAnalysis() {
       const apiKey = getApiKey();
       const accused = gameState.players[gameState.currentAccused];
@@ -1676,7 +1734,7 @@
         tagTitle.textContent = verdict.isDirect ? "⚡ مخالفة مباشرة سريعة" : "📜 حكم قضائي بالذكاء الاصطناعي";
       }
 
-      // Display Attached Photo in Verdict (So Competitor sees it!)
+      // Display Attached Photo in Verdict
       const photoBox = document.getElementById('verdict-photo-container');
       const photoImg = document.getElementById('verdict-attached-image');
       if (gameState.lastVerdict.image) {
@@ -1734,7 +1792,7 @@
       document.getElementById('photo-lightbox-modal').classList.add('hidden');
     }
 
-    // --- APPEAL (استئناف الحكم) ---
+    // --- APPEAL ---
     function openAppealModal() {
       if (!gameState.lastVerdict) {
         showToast("لا يوجد حكم نشط لاستئنافه حالياً!", "error");
@@ -1933,7 +1991,7 @@
       }
     }
 
-    // --- PUNISHMENT WHEEL (CANVAS) ---
+    // --- PUNISHMENT WHEEL (12 EXPANDED ITEMS CANVAS) ---
     function openPunishmentWheel() {
       const loserKey = gameState.players.husband.score <= gameState.players.wife.score ? 'husband' : 'wife';
       const loser = gameState.players[loserKey];
@@ -1974,20 +2032,20 @@
         ctx.rotate(segAngle + arcSize / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#1e293b";
-        ctx.font = "bold 11px Cairo";
-        ctx.fillText(punishments[i].text, radius - 15, 4);
+        ctx.font = "bold 9.5px Cairo";
+        ctx.fillText(punishments[i].text, radius - 12, 3.5);
         ctx.restore();
       }
 
       ctx.beginPath();
-      ctx.arc(0, 0, 22, 0, 2 * Math.PI);
+      ctx.arc(0, 0, 20, 0, 2 * Math.PI);
       ctx.fillStyle = "#ffffff";
       ctx.fill();
       ctx.strokeStyle = "#d97706";
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      ctx.font = "14px Cairo";
+      ctx.font = "13px Cairo";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("⚖️", 0, 0);
@@ -2007,7 +2065,7 @@
       btn.disabled = true;
       document.getElementById('wheel-result').textContent = "العجلة تدور الآن لتحديد المصير...";
 
-      const extraRotations = 5 + Math.random() * 5;
+      const extraRotations = 6 + Math.random() * 5;
       const targetAngle = isLocalInitiator ? (wheelAngle + extraRotations * 2 * Math.PI + Math.random() * 2 * Math.PI) : remoteTargetAngle;
       const duration = 3500;
       const start = performance.now();
@@ -2098,14 +2156,30 @@
 
     function reconnectRealtime() {
       initRealtimeSync();
+      initFirebaseFirestore();
       showToast("🔄 جارٍ إعادة الاتصال بالمزامنة الحية...", "info");
     }
 
-    // --- HISTORY LOG TAB (WITH THUMBNAILS & LIGHTBOX) ---
+    // --- PERMISSION CHECK: IS CURRENT USER ASHRAF? ---
+    function isAshrafAdmin() {
+      return gameState.myRole === 'husband';
+    }
+
+    // --- HISTORY LOG TAB ---
     function renderHistoryList() {
       const listEl = document.getElementById('history-list');
       const emptyEl = document.getElementById('history-empty-state');
+      const clearBox = document.getElementById('clear-history-box');
       listEl.innerHTML = '';
+
+      // Hide or show Clear History button based on role (Ashraf only)
+      if (clearBox) {
+        if (!isAshrafAdmin()) {
+          clearBox.classList.add('hidden');
+        } else {
+          clearBox.classList.remove('hidden');
+        }
+      }
 
       if (gameState.history.length === 0) {
         emptyEl.classList.remove('hidden');
@@ -2123,6 +2197,11 @@
         const photoThumb = item.image 
           ? `<img src="${item.image}" alt="دليل" onclick="openPhotoLightbox('${item.image}')" class="w-11 h-11 rounded-xl object-cover border border-slate-300 cursor-pointer shadow-sm flex-shrink-0 hover:opacity-80 transition-opacity" title="انقر لتكبير الصورة" />`
           : `<div class="text-xl w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center border border-slate-200 flex-shrink-0">${accused.avatar}</div>`;
+
+        // Delete button for Ashraf only
+        const deleteBtn = isAshrafAdmin() 
+          ? `<button onclick="deleteHistoryItem(${index})" class="text-slate-400 hover:text-red-600 text-xs p-1" title="حذف القضية"><i class="fa-solid fa-trash"></i></button>`
+          : ``;
 
         row.innerHTML = `
           <div class="flex items-center gap-2.5 overflow-hidden">
@@ -2142,9 +2221,7 @@
             <span class="text-xs font-black font-tajawal px-2 py-1 rounded-lg ${isPos ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
               ${isPos ? '+' : ''}${item.net_points}
             </span>
-            <button onclick="deleteHistoryItem(${index})" class="text-slate-400 hover:text-red-600 text-xs p-1">
-              <i class="fa-solid fa-trash"></i>
-            </button>
+            ${deleteBtn}
           </div>
         `;
         listEl.appendChild(row);
@@ -2152,6 +2229,10 @@
     }
 
     function deleteHistoryItem(index) {
+      if (!isAshrafAdmin()) {
+        showToast("⚠️ عذراً: صلاحية حذف القضايا خاصة بأشرف فقط 🧔‍♂️", "error");
+        return;
+      }
       gameState.history.splice(index, 1);
       saveStateToLocalStorage();
       renderHistoryList();
@@ -2160,11 +2241,15 @@
     }
 
     function clearHistoryConfirmation() {
-      if (confirm("هل أنت متأكد من مسح جميع سجلات القضايا السابقة للطرفين؟")) {
+      if (!isAshrafAdmin()) {
+        showToast("⚠️ عذراً: صلاحية مسح السجل بالكامل خاصة بأشرف فقط 🧔‍♂️", "error");
+        return;
+      }
+      if (confirm("هل أنت متأكد يا أشرف من مسح جميع سجلات القضايا السابقة للطرفين؟")) {
         gameState.history = [];
         saveStateToLocalStorage();
         renderHistoryList();
-        broadcastCurrentState();
+        broadcastAction('clear_history');
         showToast("تم مسح السجل القضائي بالكامل", "info");
       }
     }
@@ -2211,7 +2296,11 @@
     }
 
     function resetScoresConfirmation() {
-      if (confirm("هل تريد تصفير نقاط جميع اللاعبين في الغرفة المشتركة؟")) {
+      if (!isAshrafAdmin()) {
+        showToast("⚠️ عذراً: صلاحية تصفير النقاط خاصة بأشرف فقط 🧔‍♂️", "error");
+        return;
+      }
+      if (confirm("هل تريد يا أشرف تصفير نقاط جميع اللاعبين في الغرفة المشتركة؟")) {
         gameState.players.husband.score = 0;
         gameState.players.wife.score = 0;
         saveStateToLocalStorage();
@@ -2247,7 +2336,7 @@
       showToast("✨ تم تحميل ونشر بيانات تجريبية لأشرف وسارة!", "success");
     }
 
-    // --- SYNTHESIZED SOUND EFFECTS (Web Audio API) ---
+    // --- SYNTHESIZED SOUND EFFECTS ---
     function playSound(type) {
       if (!gameState.soundEnabled) return;
       try {
